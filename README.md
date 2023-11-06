@@ -54,7 +54,7 @@ The features our aplication has are:
 
 ## Database
 
-![image](./public/database.png)
+![image](./public/charter_database.png)
 
 ## Technologies
 
