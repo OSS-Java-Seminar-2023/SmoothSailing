@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface CrewRepo extends JpaRepository<CrewModel, UUID> {
+
 }
