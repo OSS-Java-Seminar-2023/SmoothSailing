@@ -1,16 +1,23 @@
 package com.SmoothSailing.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import java.util.UUID;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+
 
 @Data
 @Entity
-@Table(name="User")
+@Table(name="users")
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class UserModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     @Column
     private String name;
     @Column
@@ -23,7 +30,7 @@ public class UserModel {
     private String password;
     @Column
     private String gender;
-    @Column
-    private String birthday;
-
+    @Column(name="Date_Of_Birth")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date birthday;
 }

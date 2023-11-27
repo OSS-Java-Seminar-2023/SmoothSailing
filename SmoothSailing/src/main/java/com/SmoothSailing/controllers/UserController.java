@@ -1,15 +1,44 @@
 package com.SmoothSailing.controllers;
 
-import com.SmoothSailing.repositories.UserRepo;
+import com.SmoothSailing.models.UserModel;
+import com.SmoothSailing.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping(path="/user")
+@CrossOrigin
 public class UserController {
-    private final UserRepo userRepo;
-
     @Autowired
-    public UserController(UserRepo userRepo){
-        this.userRepo=userRepo;
+    private UserService userService;
+
+    @GetMapping(path="/users")
+    public List<UserModel> users(){
+        return userService.getAllUsers();
     }
+
+    @PostMapping(path="/register")
+    public String register(@RequestBody UserModel userModel){
+        UserModel registeredUser = userService.registerUser(userModel);
+        return "req 200";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody UserModel userModel, Model model){
+        System.out.println("login request: " + userModel);
+        UserModel authenticated = userService.authenticate(userModel.getEmail(), userModel.getPassword());
+        if(authenticated!=null){
+            model.addAttribute("userEmail", authenticated.getEmail());
+            System.out.println("User exist, authenticated!");
+            return "req 200";
+        }
+        else{
+            System.out.println("User doesn't exsit!");
+            return "req 204";
+        }
+    }
+
 }
