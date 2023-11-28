@@ -4,8 +4,6 @@
 
 Ante Šolić
 
-Martina Dražetić
-
 Antonio Krželj
 
 ## List of Contents 📖

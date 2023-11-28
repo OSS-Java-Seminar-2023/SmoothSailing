@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name="Boat")
+@Table(name="boat")
 public class BoatModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,5 +19,15 @@ public class BoatModel {
     private String availability;
     @Column
     private String review;
-
+    @Column
+    private String name;
+    @Column
+    private String type;
+    @Column
+    private int crewCapacity;
+    @Column
+    private int passengerCapacity;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private CompanyModel company_id;
 }
