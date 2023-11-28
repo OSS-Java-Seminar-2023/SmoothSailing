@@ -3,14 +3,13 @@ package com.SmoothSailing.controllers;
 import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping(path="/user")
-@CrossOrigin
+@Controller
 public class UserController {
     @Autowired
     private UserService userService;
@@ -20,24 +19,35 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping(path="/register")
-    public String register(@RequestBody UserModel userModel){
+    @GetMapping("/register")
+    public String getRegisterPage(Model model){
+        model.addAttribute("registerRequest", new UserModel());
+        return "register_page";
+    }
+
+    @GetMapping("/login")
+    public String getLoginPage(Model model){
+        model.addAttribute("loginRequest", new UserModel());
+        return "login_page";
+    }
+
+    @PostMapping("/register")
+    public String register(@ModelAttribute UserModel userModel){
+        System.out.println("register request: " + userModel);
         UserModel registeredUser = userService.registerUser(userModel);
-        return "req 200";
+        return registeredUser == null ? "error_page" : "redirect:/login";
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody UserModel userModel, Model model){
+    public String login(@ModelAttribute UserModel userModel, Model model){
         System.out.println("login request: " + userModel);
         UserModel authenticated = userService.authenticate(userModel.getEmail(), userModel.getPassword());
         if(authenticated!=null){
             model.addAttribute("userEmail", authenticated.getEmail());
-            System.out.println("User exist, authenticated!");
-            return "req 200";
+            return "personal_page";
         }
         else{
-            System.out.println("User doesn't exsit!");
-            return "req 204";
+            return "error_page";
         }
     }
 
