@@ -2,15 +2,15 @@ package com.SmoothSailing.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.UUID;
+
 
 @Data
 @Entity
-@Table(name="boat")
+@Table(name="boats")
 public class BoatModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     @Column
     private String img;
     @Column
@@ -28,6 +28,7 @@ public class BoatModel {
     @Column
     private int passengerCapacity;
     @ManyToOne
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
+    @Convert(converter = CompanyModelConverter.class)
     private CompanyModel company_id;
 }
