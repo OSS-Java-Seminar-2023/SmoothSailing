@@ -1,5 +1,6 @@
 package com.SmoothSailing.services;
 
+import com.SmoothSailing.dto.ChangeUserPassDto;
 import com.SmoothSailing.dto.UserRegisterDto;
 import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.repositories.UserRepo;
@@ -50,8 +51,29 @@ public class UserService {
         return null;
     }
 
-    public String deleteUserById(String id){
+    public Optional<UserModel> getUserById(String id){
+        return userRepo.findById(id);
+    }
+
+    public void editUser(String id, UserRegisterDto user){
+        userRepo.findById(id).map(userModel -> {
+            userModel.setName(user.getName());
+            userModel.setSurname(user.getSurname());
+            userModel.setBirthday(user.getBirthday());
+            userModel.setGender(user.getGender());
+            userModel.setLicense(user.getLicense());
+            return userRepo.save(userModel);
+        });
+    }
+
+    public void changePass(String id, String password){
+        userRepo.findById(id).map(userModel -> {
+            userModel.setPassword(BCrypt.hashpw(password, BCrypt.gensalt(10)));
+            return userRepo.save(userModel);
+        });
+    }
+
+    public void deleteUserById(String id){
         userRepo.deleteById(id);
-        return "Success";
     }
 }

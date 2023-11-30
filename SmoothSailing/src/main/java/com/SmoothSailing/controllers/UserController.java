@@ -1,5 +1,6 @@
 package com.SmoothSailing.controllers;
 
+import com.SmoothSailing.dto.ChangeUserPassDto;
 import com.SmoothSailing.dto.UserLoginDto;
 import com.SmoothSailing.dto.UserRegisterDto;
 import com.SmoothSailing.models.UserModel;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -56,10 +58,34 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user/edit/{id}")
+    public String editForm(@PathVariable("id") String id, Model model){
+        Optional<UserModel> user = userService.getUserById(id);
+        user.ifPresent(userModel -> model.addAttribute("editUserRequest", userModel));
+        return "edit_user";
+    }
+
+    @PostMapping("/user/edit/{id}")
+    public String edit(@PathVariable("id") String id, @ModelAttribute UserRegisterDto userDto){
+        userService.editUser(id, userDto);
+        return "redirect:/users";
+    }
+
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") String id){
         userService.deleteUserById(id);
         return "redirect:/users";
     }
 
+    @GetMapping("user/change-password/{id}")
+    public String changePassword(@PathVariable("id") String id, Model model){
+        model.addAttribute("changePasswordRequest", id);
+        return "change_password";
+    }
+
+    @PostMapping("user/change-password/{id}")
+    public String changePassword(@PathVariable("id") String id, @ModelAttribute ChangeUserPassDto changeUserPassDto){
+        userService.changePass(id, changeUserPassDto.getPassword());
+        return "redirect:/users";
+    }
 }
