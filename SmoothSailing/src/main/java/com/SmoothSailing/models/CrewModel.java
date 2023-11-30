@@ -10,7 +10,7 @@ import java.util.UUID;
 public class CrewModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private String id;
     @Column
     private String name;
     @Column

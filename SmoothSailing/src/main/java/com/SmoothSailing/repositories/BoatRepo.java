@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface BoatRepo extends JpaRepository<BoatModel, UUID> {
+public interface BoatRepo extends JpaRepository<BoatModel, String> {
 }

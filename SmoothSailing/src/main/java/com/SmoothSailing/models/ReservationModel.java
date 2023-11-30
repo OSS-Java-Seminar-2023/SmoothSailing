@@ -2,6 +2,9 @@ package com.SmoothSailing.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.util.UUID;
 
 @Data
@@ -10,7 +13,7 @@ import java.util.UUID;
 public class ReservationModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private String id;
     @Column
     private String startDate;
     @Column
@@ -22,5 +25,6 @@ public class ReservationModel {
     private UserModel user_id;
     @ManyToOne
     @JoinColumn(name = "boat_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private BoatModel boat_id;
 }

@@ -2,6 +2,8 @@ package com.SmoothSailing.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 
 @Data
@@ -30,5 +32,6 @@ public class BoatModel {
     @ManyToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     @Convert(converter = CompanyModelConverter.class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private CompanyModel company_id;
 }

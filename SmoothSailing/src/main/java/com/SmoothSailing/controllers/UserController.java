@@ -1,5 +1,7 @@
 package com.SmoothSailing.controllers;
 
+import com.SmoothSailing.dto.UserLoginDto;
+import com.SmoothSailing.dto.UserRegisterDto;
 import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -15,8 +18,10 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(path="/users")
-    public List<UserModel> users(){
-        return userService.getAllUsers();
+    public String users(Model model){
+        List<UserModel> users = userService.getAllUsers();
+        model.addAttribute("userListRequest", users);
+        return "user_list";
     }
 
     @GetMapping("/register")
@@ -32,16 +37,16 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute UserModel userModel){
-        System.out.println("register request: " + userModel);
-        UserModel registeredUser = userService.registerUser(userModel);
+    public String register(@ModelAttribute UserRegisterDto userDto){
+        System.out.println("register request: " + userDto);
+        UserModel registeredUser = userService.registerUser(userDto);
         return registeredUser == null ? "error_page" : "redirect:/login";
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute UserModel userModel, Model model){
-        System.out.println("login request: " + userModel);
-        UserModel authenticated = userService.authenticate(userModel.getEmail(), userModel.getPassword());
+    public String login(@ModelAttribute UserLoginDto userDto, Model model){
+        System.out.println("login request: " + userDto);
+        UserModel authenticated = userService.authenticate(userDto.getEmail(), userDto.getPassword());
         if(authenticated!=null){
             model.addAttribute("userEmail", authenticated.getEmail());
             return "personal_page";
@@ -49,6 +54,12 @@ public class UserController {
         else{
             return "error_page";
         }
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") String id){
+        userService.deleteUserById(id);
+        return "redirect:/users";
     }
 
 }
