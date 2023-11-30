@@ -15,11 +15,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(path="/users")
+    @GetMapping(path="/list")
     public String users(Model model){
         List<UserModel> users = userService.getAllUsers();
         model.addAttribute("userListRequest", users);
@@ -42,7 +43,7 @@ public class UserController {
     public String register(@ModelAttribute UserRegisterDto userDto){
         System.out.println("register request: " + userDto);
         UserModel registeredUser = userService.registerUser(userDto);
-        return registeredUser == null ? "error_page" : "redirect:/login";
+        return registeredUser == null ? "error_page" : "redirect:/user/login";
     }
 
     @PostMapping("/login")
@@ -58,34 +59,34 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String editForm(@PathVariable("id") String id, Model model){
         Optional<UserModel> user = userService.getUserById(id);
         user.ifPresent(userModel -> model.addAttribute("editUserRequest", userModel));
         return "edit_user";
     }
 
-    @PostMapping("/user/edit/{id}")
+    @PostMapping("/edit/{id}")
     public String edit(@PathVariable("id") String id, @ModelAttribute UserRegisterDto userDto){
         userService.editUser(id, userDto);
-        return "redirect:/users";
+        return "redirect:/user/list";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") String id){
         userService.deleteUserById(id);
-        return "redirect:/users";
+        return "redirect:/user/list";
     }
 
-    @GetMapping("user/change-password/{id}")
+    @GetMapping("/change-password/{id}")
     public String changePassword(@PathVariable("id") String id, Model model){
         model.addAttribute("changePasswordRequest", id);
         return "change_password";
     }
 
-    @PostMapping("user/change-password/{id}")
+    @PostMapping("/change-password/{id}")
     public String changePassword(@PathVariable("id") String id, @ModelAttribute ChangeUserPassDto changeUserPassDto){
         userService.changePass(id, changeUserPassDto.getPassword());
-        return "redirect:/users";
+        return "redirect:/user/list";
     }
 }

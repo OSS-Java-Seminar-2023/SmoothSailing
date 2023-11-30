@@ -6,7 +6,7 @@
 </head>
 <body>
 <div>
-    <form method="post" action="/login/company" th:object="${loginCompanyRequest}">
+    <form method="post" action="/company/login" th:object="${loginCompanyRequest}">
         <h2>Login company</h2>
         <div>
             <input type="email" name="email" placeholder="email" required>
@@ -17,7 +17,7 @@
         <div>
             <input type="submit" name="sign-in" value="Login">
         </div>
-        <a href="/register/company">Navigate to register</a>
+        <a href="/company/register">Navigate to register</a>
     </form>
 </div>
 </body>

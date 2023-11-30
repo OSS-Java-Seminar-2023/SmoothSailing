@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Register page</title>
+</head>
+<body>
+<div>
+    <form method="post" th:action="@{'/company/edit/' + ${editCompanyRequest.id}}" th:object="${editCompanyRequest}">
+        <h2>Register</h2>
+        <div>
+            <input th:value="${editCompanyRequest.name}" type="text" name="name" placeholder="name" required>
+        </div>
+        <div>
+            <input th:value="${editCompanyRequest.location}" type="text" name="location" placeholder="location" required>
+        </div>
+        <div>
+            <input type="submit" name="edit" value="Edit">
+        </div>
+        <a href="/">Navigate to main</a>
+    </form>
+</div>
+</body>
+</html>

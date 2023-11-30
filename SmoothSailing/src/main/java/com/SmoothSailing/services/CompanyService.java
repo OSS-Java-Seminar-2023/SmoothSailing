@@ -1,6 +1,9 @@
 package com.SmoothSailing.services;
 
+import com.SmoothSailing.dto.CompanyRegisterDto;
+import com.SmoothSailing.dto.UserRegisterDto;
 import com.SmoothSailing.models.CompanyModel;
+import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.repositories.CompanyRepo;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +47,28 @@ public class CompanyService {
 
     public List<CompanyModel> getAllCompanies(){
         return companyRepo.findAll();
+    }
+
+    public void changePass(String id, String password){
+        companyRepo.findById(id).map(userModel -> {
+            userModel.setPassword(BCrypt.hashpw(password, BCrypt.gensalt(10)));
+            return companyRepo.save(userModel);
+        });
+    }
+
+    public Optional<CompanyModel> getById(String id){
+        return companyRepo.findById(id);
+    }
+
+    public void edit(String id, CompanyRegisterDto company){
+        companyRepo.findById(id).map(companyModel -> {
+            companyModel.setName(company.getName());
+            companyModel.setLocation(company.getLocation());
+            return companyRepo.save(companyModel);
+        });
+    }
+
+    public void deleteById(String id){
+        companyRepo.deleteById(id);
     }
 }

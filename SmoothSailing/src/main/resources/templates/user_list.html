@@ -22,7 +22,7 @@
             <td class="align-middle" th:text="${user.surname}"></td>
             <td class="align-middle" th:text="${user.email}"></td>
             <td><a th:href="@{'/user/edit/' + ${user.id}}">Edit</a></td>
-            <td><a th:href="@{'/delete/' + ${user.id}}">Delete</a></td>
+            <td><a th:href="@{'/user/delete/' + ${user.id}}">Delete</a></td>
             <td><a th:href="@{'/user/change-password/' + ${user.id}}">Change Password</a></td>
         </tr>
         <tr th:if="${userListRequest.isEmpty()}">
