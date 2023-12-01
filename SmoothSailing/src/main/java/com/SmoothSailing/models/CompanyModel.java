@@ -9,8 +9,8 @@ import java.util.UUID;
 @Table(name="company")
 public class CompanyModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     @Column
     private String name;
     @Column

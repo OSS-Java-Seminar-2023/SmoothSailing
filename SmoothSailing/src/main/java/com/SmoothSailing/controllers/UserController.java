@@ -1,5 +1,8 @@
 package com.SmoothSailing.controllers;
 
+import com.SmoothSailing.dto.ChangeUserPassDto;
+import com.SmoothSailing.dto.UserLoginDto;
+import com.SmoothSailing.dto.UserRegisterDto;
 import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,15 +11,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(path="/users")
-    public List<UserModel> users(){
-        return userService.getAllUsers();
+    @GetMapping(path="/list")
+    public String users(Model model){
+        List<UserModel> users = userService.getAllUsers();
+        model.addAttribute("userListRequest", users);
+        return "user_list";
     }
 
     @GetMapping("/register")
@@ -32,16 +40,16 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute UserModel userModel){
-        System.out.println("register request: " + userModel);
-        UserModel registeredUser = userService.registerUser(userModel);
-        return registeredUser == null ? "error_page" : "redirect:/login";
+    public String register(@ModelAttribute UserRegisterDto userDto){
+        System.out.println("register request: " + userDto);
+        UserModel registeredUser = userService.registerUser(userDto);
+        return registeredUser == null ? "error_page" : "redirect:/user/login";
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute UserModel userModel, Model model){
-        System.out.println("login request: " + userModel);
-        UserModel authenticated = userService.authenticate(userModel.getEmail(), userModel.getPassword());
+    public String login(@ModelAttribute UserLoginDto userDto, Model model){
+        System.out.println("login request: " + userDto);
+        UserModel authenticated = userService.authenticate(userDto.getEmail(), userDto.getPassword());
         if(authenticated!=null){
             model.addAttribute("userEmail", authenticated.getEmail());
             return "personal_page";
@@ -51,4 +59,34 @@ public class UserController {
         }
     }
 
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable("id") String id, Model model){
+        Optional<UserModel> user = userService.getUserById(id);
+        user.ifPresent(userModel -> model.addAttribute("editUserRequest", userModel));
+        return "edit_user";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String edit(@PathVariable("id") String id, @ModelAttribute UserRegisterDto userDto){
+        userService.editUser(id, userDto);
+        return "redirect:/user/list";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") String id){
+        userService.deleteUserById(id);
+        return "redirect:/user/list";
+    }
+
+    @GetMapping("/change-password/{id}")
+    public String changePassword(@PathVariable("id") String id, Model model){
+        model.addAttribute("changePasswordRequest", id);
+        return "change_password";
+    }
+
+    @PostMapping("/change-password/{id}")
+    public String changePassword(@PathVariable("id") String id, @ModelAttribute ChangeUserPassDto changeUserPassDto){
+        userService.changePass(id, changeUserPassDto.getPassword());
+        return "redirect:/user/list";
+    }
 }

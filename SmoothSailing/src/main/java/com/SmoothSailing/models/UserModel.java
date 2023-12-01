@@ -12,8 +12,6 @@ import java.util.Date;
 @Table(name="users")
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

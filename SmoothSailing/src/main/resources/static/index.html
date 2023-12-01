@@ -3,12 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome page</title>
+    <style>
+        div {
+            border: 1px solid black;
+            width: 20%;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
 <h1>Welcome to the application</h1>
+<div>
+    <h2>User stuff: </h2>
+    <a href="/user/register">Navigate to register user</a>
+    <br>
+    <a href="/user/list">See list of users!</a>
+    <br>
+    <a href="/user/login">Navigate to login user</a>
+</div>
 <br>
-<a href="/register">Navigate to register</a>
+<div>
+    <h2>Company stuff: </h2>
+    <a href="/company/register">Navigate to register company</a>
+    <br>
+    <a href="/company/login">Navigate to login company</a>
+    <br>
+    <a href="/company/list">See list of companies!</a>
+</div>
 <br>
-<a href="/login">Navigate to login</a>
+<div>
+    <h2>Boat stuff: </h2>
+    <a href="/boat/register">Register boat</a>
+</div>
 </body>
 </html>

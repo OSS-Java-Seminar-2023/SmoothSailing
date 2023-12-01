@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Login page</title>
+    <style>
+        table, th, td {
+  border: 1px solid black;
+}
+    </style>
+</head>
+<body>
+<div>
+    <table>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+        </tr>
+        <tr th:each="company : ${companyListRequest}">
+            <td class="align-middle" th:text="${company.name}"></td>
+            <td class="align-middle" th:text="${company.location}"></td>
+            <td class="align-middle" th:text="${company.email}"></td>
+            <td><a th:href="@{'/company/edit/' + ${company.id}}">Edit</a></td>
+            <td><a th:href="@{'/company/delete/' + ${company.id}}">Delete</a></td>
+            <td><a th:href="@{'/company/change-password/' + ${company.id}}">Change Password</a></td>
+        </tr>
+        <tr th:if="${companyListRequest.isEmpty()}">
+            <td class="text-center" colspan="3">No Records found. Add some...!</td><a href="/register"></a>
+        </tr>
+    </table>
+    <button><a href="/" />Home</button>
+</div>
+</body>
+</html>

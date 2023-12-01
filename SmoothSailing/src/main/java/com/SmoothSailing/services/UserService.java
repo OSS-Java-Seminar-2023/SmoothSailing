@@ -1,28 +1,34 @@
 package com.SmoothSailing.services;
 
+import com.SmoothSailing.dto.ChangeUserPassDto;
+import com.SmoothSailing.dto.UserRegisterDto;
 import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.repositories.UserRepo;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
     @Autowired
     public UserRepo userRepo;
 
-    public UserModel registerUser(UserModel userModel){
+    public UserModel registerUser(UserRegisterDto userModel){
         if(userRepo.findByEmail(userModel.getEmail()).isPresent()){
             System.out.println("Email vec postoji u bazi!");
             return null;
         }
-        userModel.setPassword(BCrypt.hashpw(userModel.getPassword(), BCrypt.gensalt(10)));
-        return userRepo.save(userModel);
+        UserModel newUserModel = new UserModel();
+        newUserModel.setName(userModel.getName());
+        newUserModel.setSurname(userModel.getSurname());
+        newUserModel.setEmail(userModel.getEmail());
+        newUserModel.setPassword(BCrypt.hashpw(userModel.getPassword(), BCrypt.gensalt(10)));
+        newUserModel.setGender(userModel.getGender());
+        newUserModel.setLicense(userModel.getLicense());
+        newUserModel.setBirthday(userModel.getBirthday());
+        return userRepo.save(newUserModel);
     }
 
     public List<UserModel> getAllUsers(){
@@ -45,4 +51,29 @@ public class UserService {
         return null;
     }
 
+    public Optional<UserModel> getUserById(String id){
+        return userRepo.findById(id);
+    }
+
+    public void editUser(String id, UserRegisterDto user){
+        userRepo.findById(id).map(userModel -> {
+            userModel.setName(user.getName());
+            userModel.setSurname(user.getSurname());
+            userModel.setBirthday(user.getBirthday());
+            userModel.setGender(user.getGender());
+            userModel.setLicense(user.getLicense());
+            return userRepo.save(userModel);
+        });
+    }
+
+    public void changePass(String id, String password){
+        userRepo.findById(id).map(userModel -> {
+            userModel.setPassword(BCrypt.hashpw(password, BCrypt.gensalt(10)));
+            return userRepo.save(userModel);
+        });
+    }
+
+    public void deleteUserById(String id){
+        userRepo.deleteById(id);
+    }
 }

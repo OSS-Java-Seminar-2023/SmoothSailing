@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Boat</title>
+</head>
+<body>
+<div>
+    <form method="post" action="/boat/register" th:object="${registerBoatRequest}">
+        <h2>Register Boat</h2>
+        <div>
+            <input type="text" name="img" placeholder="img" required>
+        </div>
+        <div>
+            <input type="text" name="price" placeholder="price" required>
+        </div>
+        <div>
+            <input type="text" name="availability" placeholder="availability" required>
+        </div>
+        <div>
+            <input type="text" name="review" placeholder="review" required>
+        </div>
+        <div>
+            <input type="text" name="name" placeholder="name" required>
+        </div>
+        <div>
+            <input type="text" name="type" placeholder="type" required>
+        </div>
+        <div>
+            <label for="crewCapacity">Crew capacity (between 1 and 5):</label>
+            <input type="number" id="crewCapacity" name="crewCapacity" min="1" max="5">
+        </div>
+        <div>
+            <label for="passengerCapacity">Passenger capacity (between 1 and 10):</label>
+            <input type="number" id="passengerCapacity" name="passengerCapacity" min="1" max="10">
+        </div>
+        <div>
+            <label>Choose a company:</label>
+            <select th:field="*{company_id}">
+                <option th:each="company : ${companies}" th:value="${company.id}" th:text="${company.name}"></option>
+            </select>
+        </div>
+        <div>
+            <input type="submit" name="sign-in" value="Register">
+        </div>
+        <a href="/">Navigate to main</a>
+    </form>
+</div>
+</body>
+</html>

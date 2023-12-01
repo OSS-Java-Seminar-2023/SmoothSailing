@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Register page</title>
+</head>
+<body>
+<div>
+    <form method="post" th:action="@{'/user/edit/' + ${editUserRequest.id}}" th:object="${editUserRequest}">
+        <h2>Register</h2>
+        <div>
+            <input th:value="${editUserRequest.name}" type="text" name="name" placeholder="name" required>
+        </div>
+        <div>
+            <input th:value="${editUserRequest.surname}" type="text" name="surname" placeholder="surname" required>
+        </div>
+        <div>
+            <input type="date" name="birthday" placeholder="birthday">
+        </div>
+        <div>
+            <input type="radio" name="gender" value="Male" id="male">
+            <label for="male">Male</label>
+            <input type="radio" name="gender" value="Female" id="female">
+            <label for="female">female</label>
+        </div>
+        <div>
+            <input type="radio" name="license" value="Yes" id="yes">
+            <label for="yes">Yes</label>
+            <input type="radio" name="license" value="No" id="no">
+            <label for="no">No</label>
+        </div>
+        <div>
+            <input type="submit" name="edit" value="Edit">
+        </div>
+        <a href="/">Navigate to main</a>
+    </form>
+</div>
+</body>
+</html>
