@@ -21,12 +21,16 @@ public class CompanyService {
         this.companyRepo=companyRepo;
     }
 
-    public CompanyModel registerCompany(CompanyModel companyModel){
-        if(companyRepo.findByEmail(companyModel.getEmail()).isPresent()){
+    public CompanyModel registerCompany(CompanyRegisterDto companyRegisterDto){
+        if(companyRepo.findByEmail(companyRegisterDto.getEmail()).isPresent()){
             System.out.println("Email vec postoji u bazi!");
             return null;
         }
-        companyModel.setPassword(BCrypt.hashpw(companyModel.getPassword(), BCrypt.gensalt(10)));
+        CompanyModel companyModel = new CompanyModel();
+        companyModel.setName(companyRegisterDto.getName());
+        companyModel.setLocation(companyRegisterDto.getLocation());
+        companyModel.setEmail(companyRegisterDto.getEmail());
+        companyModel.setPassword(BCrypt.hashpw(companyRegisterDto.getPassword(), BCrypt.gensalt(10)));
         return companyRepo.save(companyModel);
     }
 

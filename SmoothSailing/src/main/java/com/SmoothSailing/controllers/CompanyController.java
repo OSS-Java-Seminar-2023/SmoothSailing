@@ -2,6 +2,7 @@ package com.SmoothSailing.controllers;
 
 import com.SmoothSailing.dto.ChangeUserPassDto;
 import com.SmoothSailing.dto.CompanyRegisterDto;
+import com.SmoothSailing.dto.UserLoginDto;
 import com.SmoothSailing.dto.UserRegisterDto;
 import com.SmoothSailing.models.CompanyModel;
 import com.SmoothSailing.models.UserModel;
@@ -35,16 +36,16 @@ public class CompanyController {
     }
 
     @PostMapping("/register")
-    public String registerCompany(@ModelAttribute CompanyModel companyModel){
-        System.out.println("register request: " + companyModel);
-        CompanyModel registeredCompany = companyService.registerCompany(companyModel);
+    public String registerCompany(@ModelAttribute CompanyRegisterDto companyRegisterDto){
+        System.out.println("register request: " + companyRegisterDto);
+        CompanyModel registeredCompany = companyService.registerCompany(companyRegisterDto);
         return registeredCompany == null ? "error_page" : "redirect:/company/login";
     }
 
     @PostMapping("/login")
-    public String loginCompany(@ModelAttribute CompanyModel companyModel, Model model){
-        System.out.println("login request: " + companyModel);
-        CompanyModel authenticated = companyService.authenticateCompany(companyModel.getEmail(), companyModel.getPassword());
+    public String loginCompany(@ModelAttribute UserLoginDto companyLoginDto, Model model){
+        System.out.println("login request: " + companyLoginDto);
+        CompanyModel authenticated = companyService.authenticateCompany(companyLoginDto.getEmail(), companyLoginDto.getPassword());
         if (authenticated!=null){
             model.addAttribute("companyEmail", authenticated.getEmail());
             return "company_page";

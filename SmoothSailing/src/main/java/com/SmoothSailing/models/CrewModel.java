@@ -2,6 +2,9 @@ package com.SmoothSailing.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.util.UUID;
 
 @Data
@@ -21,5 +24,9 @@ public class CrewModel {
     private String price;
     @Column
     private String review;
-
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
+    @Convert(converter = CompanyModelConverter.class)
+    private CompanyModel company_id;
 }
