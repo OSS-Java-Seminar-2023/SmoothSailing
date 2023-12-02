@@ -5,6 +5,8 @@ import com.SmoothSailing.repositories.BoatRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BoatService {
     public final BoatRepo boatRepo;
@@ -12,6 +14,10 @@ public class BoatService {
     @Autowired
     public BoatService(BoatRepo boatRepo){
         this.boatRepo=boatRepo;
+    }
+
+    public List<BoatModel> getAllBoats(){
+        return boatRepo.findAll();
     }
 
     public BoatModel registerBoat(BoatModel boatModel){

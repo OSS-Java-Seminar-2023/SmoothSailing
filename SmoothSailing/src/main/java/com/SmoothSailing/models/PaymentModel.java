@@ -12,7 +12,7 @@ import java.util.UUID;
 @Table(name="payment")
 public class PaymentModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     @Column
     private String oib;
