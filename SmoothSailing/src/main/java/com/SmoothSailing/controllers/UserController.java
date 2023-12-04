@@ -5,6 +5,8 @@ import com.SmoothSailing.dto.UserLoginDto;
 import com.SmoothSailing.dto.UserRegisterDto;
 import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.services.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,11 +49,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute UserLoginDto userDto, Model model){
+    public String login(@ModelAttribute UserLoginDto userDto, Model model, HttpServletResponse response){
         System.out.println("login request: " + userDto);
         UserModel authenticated = userService.authenticate(userDto.getEmail(), userDto.getPassword());
         if(authenticated!=null){
             model.addAttribute("userEmail", authenticated.getEmail());
+
+            Cookie cookie = new Cookie("user", authenticated.getId());
+            cookie.setMaxAge(3600);
+            response.addCookie(cookie);
+
             return "personal_page";
         }
         else{
