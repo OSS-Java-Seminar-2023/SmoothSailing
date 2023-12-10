@@ -1,5 +1,6 @@
 package com.SmoothSailing.services;
 
+import com.SmoothSailing.dto.ReservationDatesDto;
 import com.SmoothSailing.models.BoatModel;
 import com.SmoothSailing.models.ReservationModel;
 import com.SmoothSailing.models.UserModel;
@@ -29,7 +30,7 @@ public class ReservationService {
         return reservationRepo.findAllBoatID();
     }
 
-    public List<Date[]> getAllDatesByBoatID(String boat_id){
+    public List<ReservationDatesDto> getAllDatesByBoatID(String boat_id){
         return reservationRepo.findAllDatesByBoatID(boat_id);
     }
 
@@ -42,9 +43,9 @@ public class ReservationService {
 
         if(getAllReservationBoatID().contains(UUID.fromString(reservationModel.getBoat_id().getId()))){
 
-            List <Date[]> dateRows = getAllDatesByBoatID((reservationModel.getBoat_id().getId()));
-            for (Date[] dateRow : dateRows) {
-                if((reservationModel.getStartDate().after(dateRow[0]) && reservationModel.getStartDate().before(dateRow[1])) || (reservationModel.getEndDate().after(dateRow[0]) && reservationModel.getEndDate().before(dateRow[1]))){
+            List <ReservationDatesDto> dateRows = getAllDatesByBoatID((reservationModel.getBoat_id().getId()));
+            for (ReservationDatesDto dateRow : dateRows) {
+                if((reservationModel.getStartDate().after(dateRow.getStartDate()) && reservationModel.getStartDate().before(dateRow.getEndDate())) || (reservationModel.getEndDate().after(dateRow.getStartDate()) && reservationModel.getEndDate().before(dateRow.getEndDate())) || (reservationModel.getStartDate().before(dateRow.getStartDate()) && reservationModel.getEndDate().after(dateRow.getEndDate())) ){
                     System.out.println("There is already a reservation during this time!");
                     return null;
                 }

@@ -8,6 +8,8 @@ import com.SmoothSailing.models.CompanyModel;
 import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.repositories.CompanyRepo;
 import com.SmoothSailing.services.CompanyService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,11 +45,19 @@ public class CompanyController {
     }
 
     @PostMapping("/login")
-    public String loginCompany(@ModelAttribute UserLoginDto companyLoginDto, Model model){
+    public String loginCompany(@ModelAttribute UserLoginDto companyLoginDto, Model model, HttpServletResponse response){
         System.out.println("login request: " + companyLoginDto);
         CompanyModel authenticated = companyService.authenticateCompany(companyLoginDto.getEmail(), companyLoginDto.getPassword());
         if (authenticated!=null){
             model.addAttribute("companyEmail", authenticated.getEmail());
+
+            Cookie cookie = new Cookie("company_id", authenticated.getId());
+            cookie.setMaxAge(3600);
+            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
             return "company_page";
         }
         else{

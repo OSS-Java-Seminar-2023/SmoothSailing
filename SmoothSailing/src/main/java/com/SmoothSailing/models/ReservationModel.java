@@ -28,6 +28,8 @@ public class ReservationModel {
     private Date endDate;
     @Column
     private String downPayment;
+    @Column
+    private String status;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserModel user_id;

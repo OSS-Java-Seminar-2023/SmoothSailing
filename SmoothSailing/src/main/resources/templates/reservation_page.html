@@ -6,7 +6,7 @@
 </head>
 <body>
 <div>
-    <form method="post" action="/reservation" th:object="${reservationRequest}">
+    <form method="post" action="/user/reservation" th:object="${reservationRequest}">
         <h2>Register company</h2>
         <div>
             <label for="startDate">Start date (date and time):</label>
@@ -18,11 +18,6 @@
         </div>
         <div>
             <input type="text" name="downPayment" placeholder="downPayment" required>
-        </div><div>
-            <label>Choose a user:</label>
-            <select th:field="*{user_id}">
-                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.email}"></option>
-            </select>
         </div>
         <div>
             <label>Choose a boat:</label>

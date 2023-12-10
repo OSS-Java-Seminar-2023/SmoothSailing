@@ -1,5 +1,6 @@
 package com.SmoothSailing.repositories;
 
+import com.SmoothSailing.dto.ReservationDatesDto;
 import com.SmoothSailing.models.BoatModel;
 import com.SmoothSailing.models.ReservationModel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,10 +15,13 @@ import java.util.UUID;
 @Repository
 public interface ReservationRepo extends JpaRepository<ReservationModel, String> {
 
-    @Query(value="SELECT boat_id FROM reservation", nativeQuery = true)
+    @Query("SELECT r.boat_id.id FROM ReservationModel r")
     List<UUID> findAllBoatID();
 
-    @Query(value="SELECT start_date, end_date FROM reservation WHERE boat_id = ?1", nativeQuery = true)
-    List<Date[]> findAllDatesByBoatID(String boat_id);
+    @Query("SELECT NEW com.SmoothSailing.dto.ReservationDatesDto(r.startDate, r.endDate) FROM ReservationModel r WHERE r.boat_id.id = :boatId")
+    List<ReservationDatesDto> findAllDatesByBoatID(@Param("boatId") String boatId);
 
+
+    @Query("SELECT r FROM ReservationModel r Where r.boat_id.id = :id")
+    List<ReservationModel> findAllByBoat(@Param("id") String id);
 }
