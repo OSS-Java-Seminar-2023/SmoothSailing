@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Register page</title>
+</head>
+<body>
+<div>
+    <form method="post" th:action="@{'/crew/' + ${editRequest.id}}" th:object="${editRequest}">
+        <h2>Register</h2>
+        <div>
+            <input th:value="${editRequest.name}" type="text" name="name" placeholder="name" required>
+        </div>
+        <div>
+            <input th:value="${editRequest.surname}" type="text" name="surname" placeholder="surname" required>
+        </div>
+        <div>
+            <input th:value="${editRequest.price}" type="text" name="price" placeholder="price" required>
+        </div>
+        <div>
+            <label>Select role: </label>
+            <select name="position">
+                <option value="Cook">Cook</option>
+                <option value="Sailor">Sailor</option>
+                <option value="Bartender">Bartender</option>
+            </select>
+        </div>
+        <div>
+            <label>Choose a company:</label>
+            <select th:field="*{company_id}">
+                <option th:each="company : ${companies}" th:value="${company.id}" th:text="${company.name}"></option>
+            </select>
+        </div>
+        <div>
+            <input type="submit" name="edit" value="Edit">
+        </div>
+        <a href="/">Navigate to main</a>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Login page</title>
+    <style>
+        table, th, td {
+  border: 1px solid black;
+}
+    </style>
+</head>
+<body>
+<div>
+    <table>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Position</th>
+            <th>Company</th>
+            <th>Price</th>
+        </tr>
+        <tr th:each="crew : ${roleRequest}">
+            <td class="align-middle" th:text="${crew.name}"></td>
+            <td class="align-middle" th:text="${crew.surname}"></td>
+            <td class="align-middle" th:text="${crew.position}"></td>
+            <td class="align-middle" th:text="${crew.company_id.name}"></td>
+            <td class="align-middle" th:text="${crew.price}"></td>
+            <td><a th:href="@{'/crew/' + ${crew.id}}">Edit</a></td>
+            <td><a th:href="@{'/crew/delete/' + ${crew.id}}">Delete</a></td>
+        </tr>
+        <tr th:if="${roleRequest.isEmpty()}">
+            <td class="text-center" colspan="3">No Records found. Add some...!</td><a href="/crew/register"></a>
+        </tr>
+    </table>
+    <button><a href="/" />Home</button>
+</div>
+</body>
+</html>
