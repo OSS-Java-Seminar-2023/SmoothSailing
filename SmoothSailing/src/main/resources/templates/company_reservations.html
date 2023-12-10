@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservations</title>
+</head>
+<body>
+<table>
+    <tr th:if="${reservations == null or reservations.empty}">
+        <td colspan="2"> No Reservations Available </td>
+    </tr>
+    <tr th:each="reservation : ${reservations}">
+        <td><span th:text="${reservation.id}"> Reservation ID </span></td>
+        <td><span th:text="${reservation.boat_id.name}"> Boat </span></td>
+        <td><span th:text="${reservation.startDate}"> Start date </span></td>
+        <td><span th:text="${reservation.endDate}"> End date </span></td>
+        <td><span th:text="${reservation.status}"> Status </span></td>
+        <td>
+            <span th:if="${reservation.status == 'Pending' }">
+                <form method="post" action="/company/reservation/confirm">
+                    <input type="hidden" name="id" th:value="${reservation.id}" />
+                    <input type="submit" name="confirm" value="Confirm">
+                </form>
+            </span>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

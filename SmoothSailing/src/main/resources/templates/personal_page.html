@@ -5,6 +5,9 @@
     <title>Personal page</title>
 </head>
 <body>
-<h1>Welcome to your page<span th:text="${userEmail}"></span></h1>
+<h1>Welcome to your page <span th:text="${userEmail}"></span></h1>
+<h2>Edit user</h2>
+<a th:href="@{'/user/edit/' + ${userId}}">Edit User</a>
+<a th:href="@{'/user/logout'}">Logout</a>
 </body>
 </html>

@@ -54,9 +54,13 @@ public class UserController {
         UserModel authenticated = userService.authenticate(userDto.getEmail(), userDto.getPassword());
         if(authenticated!=null){
             model.addAttribute("userEmail", authenticated.getEmail());
+            model.addAttribute("userId", authenticated.getId());
 
-            Cookie cookie = new Cookie("user", authenticated.getId());
+            Cookie cookie = new Cookie("id", authenticated.getId());
             cookie.setMaxAge(3600);
+            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
             response.addCookie(cookie);
 
             return "personal_page";
@@ -66,8 +70,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response){
+        Cookie cookie = new Cookie("id", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "login_page";
+    }
+
     @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable("id") String id, Model model){
+    public String editForm(@CookieValue("id") String id, Model model){
         Optional<UserModel> user = userService.getUserById(id);
         user.ifPresent(userModel -> model.addAttribute("editUserRequest", userModel));
         return "edit_user";
