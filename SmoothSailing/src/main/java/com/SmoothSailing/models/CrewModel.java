@@ -1,7 +1,7 @@
 package com.SmoothSailing.models;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -9,10 +9,12 @@ import java.util.UUID;
 
 @Data
 @Entity
+@Setter
+@Getter
 @Table(name="crew")
 public class CrewModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     @Column
     private String name;
