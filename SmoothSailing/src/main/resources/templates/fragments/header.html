@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <title>Register page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .dropdown-item:hover {
+             background-color: #555 !important;
+        }
+    </style>
+</head>
+<body>
+<div th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            User
+                        </a>
+                        <ul class="dropdown-menu bg-dark text-light">
+                            <li><a class="dropdown-item text-light" href="/user/register">Register</a></li>
+                            <li><a class="dropdown-item text-light" href="/user/login">Login</a></li>
+                            <li><a class="dropdown-item text-light" href="/user/list">List</a></li>
+                            <li><a class="dropdown-item text-light" href="/user/reservation">Reserve boat</a></li>
+                            <li><a class="dropdown-item text-light" href="/user/logout">Logout</a></li>
+                        </ul>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Company
+                        </a>
+                        <ul class="dropdown-menu bg-dark text-light">
+                            <li><a class="dropdown-item text-light" href="/company/register">Register</a></li>
+                            <li><a class="dropdown-item text-light" href="/company/login">Login</a></li>
+                            <li><a class="dropdown-item text-light" href="/company/list">List</a></li>
+                            <li><a class="dropdown-item text-light" href="/company/reservations">Reserve boat</a></li>
+                            <li><a class="dropdown-item text-light" href="/company/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Boat
+                        </a>
+                        <ul class="dropdown-menu bg-dark text-light">
+                            <li><a class="dropdown-item text-light" href="/boat/register">Register</a></li>
+                            <li><a class="dropdown-item text-light" href="/boat/list">List</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Crew
+                        </a>
+                        <ul class="dropdown-menu bg-dark">
+                            <li><a class="dropdown-item text-light" href="/crew/register">Register</a></li>
+                            <li><a class="dropdown-item text-light" href="/crew/list">List</a></li>
+                            <li><a class="dropdown-item text-light" href="/crew/list/cook">Cooks</a></li>
+                            <li><a class="dropdown-item text-light" href="/crew/list/bartender">Bartenders</a></li>
+                            <li><a class="dropdown-item text-light" href="/crew/list/sailor">Sailors</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>

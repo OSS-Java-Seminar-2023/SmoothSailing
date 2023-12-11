@@ -26,19 +26,19 @@ public class UserController {
     public String users(Model model){
         List<UserModel> users = userService.getAllUsers();
         model.addAttribute("userListRequest", users);
-        return "user_list";
+        return "user/user_list";
     }
 
     @GetMapping("/register")
     public String getRegisterPage(Model model){
         model.addAttribute("registerRequest", new UserModel());
-        return "register_page";
+        return "user/register_page";
     }
 
     @GetMapping("/login")
     public String getLoginPage(Model model){
         model.addAttribute("loginRequest", new UserModel());
-        return "login_page";
+        return "user/login_page";
     }
 
     @PostMapping("/register")
@@ -63,7 +63,7 @@ public class UserController {
             cookie.setPath("/");
             response.addCookie(cookie);
 
-            return "personal_page";
+            return "user/personal_page";
         }
         else{
             return "error_page";
@@ -75,14 +75,14 @@ public class UserController {
         Cookie cookie = new Cookie("id", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return "login_page";
+        return "user/login_page";
     }
 
     @GetMapping("/edit/{id}")
     public String editForm(@CookieValue("id") String id, Model model){
         Optional<UserModel> user = userService.getUserById(id);
         user.ifPresent(userModel -> model.addAttribute("editUserRequest", userModel));
-        return "edit_user";
+        return "user/edit_user";
     }
 
     @PostMapping("/edit/{id}")
@@ -100,7 +100,7 @@ public class UserController {
     @GetMapping("/change-password/{id}")
     public String changePassword(@PathVariable("id") String id, Model model){
         model.addAttribute("changePasswordRequest", id);
-        return "change_password";
+        return "user/change_password";
     }
 
     @PostMapping("/change-password/{id}")

@@ -1,38 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" >
-<head>
+<head th:replace="~{fragments/header :: head}">
     <meta charset="UTF-8">
     <title>Login page</title>
     <style>
         table, th, td {
-  border: 1px solid black;
+  border: 1px solid black !important;
 }
     </style>
 </head>
 <body>
-<div>
-    <table>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Position</th>
-            <th>Company</th>
-            <th>Price</th>
-        </tr>
-        <tr th:each="crew : ${roleRequest}">
-            <td class="align-middle" th:text="${crew.name}"></td>
-            <td class="align-middle" th:text="${crew.surname}"></td>
-            <td class="align-middle" th:text="${crew.position}"></td>
-            <td class="align-middle" th:text="${crew.company_id.name}"></td>
-            <td class="align-middle" th:text="${crew.price}"></td>
-            <td><a th:href="@{'/crew/' + ${crew.id}}">Edit</a></td>
-            <td><a th:href="@{'/crew/delete/' + ${crew.id}}">Delete</a></td>
-        </tr>
-        <tr th:if="${roleRequest.isEmpty()}">
-            <td class="text-center" colspan="3">No Records found. Add some...!</td><a href="/crew/register"></a>
-        </tr>
+<div th:replace="~{fragments/header :: header}"></div>
+<div class="container justify-content-center mt-4">
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">First name</th>
+                <th scope="col">Last name</th>
+                <th scope="col">Position</th>
+                <th scope="col">Company</th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="crew : ${roleRequest}">
+                <td class="align-middle" th:text="${crew.name}"></td>
+                <td class="align-middle" th:text="${crew.surname}"></td>
+                <td class="align-middle" th:text="${crew.position}"></td>
+                <td class="align-middle" th:text="${crew.company_id.name}"></td>
+                <td class="align-middle" th:text="${crew.price}"></td>
+                <td><a th:href="@{'/crew/' + ${crew.id}}">Edit</a></td>
+                <td><a th:href="@{'/crew/delete/' + ${crew.id}}">Delete</a></td>
+            </tr>
+            <tr th:if="${roleRequest.isEmpty()}">
+                <td class="text-center" colspan="3">No Records found. Add some...!</td><a href="/crew/register"></a>
+            </tr>
+        </tbody>
     </table>
     <button><a href="/" />Home</button>
 </div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

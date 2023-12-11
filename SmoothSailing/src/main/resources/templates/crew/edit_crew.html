@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" >
-<head>
+<head th:replace="fragments/header :: head">
     <meta charset="UTF-8">
     <title>Register page</title>
 </head>
 <body>
+<div th:replace="fragments/header :: header"></div>
 <div>
     <form method="post" th:action="@{'/crew/' + ${editRequest.id}}" th:object="${editRequest}">
         <h2>Register</h2>
@@ -37,5 +38,6 @@
         <a href="/">Navigate to main</a>
     </form>
 </div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

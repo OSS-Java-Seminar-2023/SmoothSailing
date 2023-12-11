@@ -28,13 +28,13 @@ public class CompanyController {
     @GetMapping("/register")
     public String getRegisterCompanyPage(Model model){
         model.addAttribute("registerCompanyRequest", new CompanyModel());
-        return "register_company_page";
+        return "company/register_company_page";
     }
 
     @GetMapping("/login")
     public String getLoginCompanyPage(Model model){
         model.addAttribute("loginCompanyRequest", new CompanyModel());
-        return "login_company_page";
+        return "company/login_company_page";
     }
 
     @PostMapping("/register")
@@ -58,24 +58,32 @@ public class CompanyController {
             cookie.setPath("/");
             response.addCookie(cookie);
 
-            return "company_page";
+            return "company/company_page";
         }
         else{
             return "error page";
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response){
+        Cookie cookie = new Cookie("id", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "company/login_company_page";
+    }
+
     @GetMapping(path="/list")
     public String users(Model model){
         List<CompanyModel> companies = companyService.getAllCompanies();
         model.addAttribute("companyListRequest", companies);
-        return "company_list";
+        return "company/company_list";
     }
 
     @GetMapping("/change-password/{id}")
     public String changePassword(@PathVariable("id") String id, Model model){
         model.addAttribute("changePasswordRequest", id);
-        return "company_change_pass";
+        return "company/company_change_pass";
     }
 
     @PostMapping("/change-password/{id}")
@@ -88,7 +96,7 @@ public class CompanyController {
     public String editForm(@PathVariable("id") String id, Model model){
         Optional<CompanyModel> user = companyService.getById(id);
         user.ifPresent(userModel -> model.addAttribute("editCompanyRequest", userModel));
-        return "edit_company";
+        return "company/edit_company";
     }
 
     @PostMapping("/edit/{id}")

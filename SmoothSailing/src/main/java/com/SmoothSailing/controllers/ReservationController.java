@@ -49,7 +49,7 @@ public class ReservationController {
     @GetMapping("/company/reservations")
     public String getCompanyReservations(@CookieValue(name = "company_id", required = false) String id, Model model){
         if(id == null || id.isEmpty()){
-            return "login_company_page";
+            return "company/login_company_page";
         }
         List<BoatModel> boatModels = boatRepo.findAllByCompanyID(id);
 
@@ -59,13 +59,13 @@ public class ReservationController {
         }
 
         model.addAttribute("reservations", reservations);
-        return "company_reservations";
+        return "company/company_reservations";
     }
 
     @PostMapping("/company/reservation/confirm")
     public String confirmReservation(@CookieValue(name = "company_id", required = false) String id,@RequestParam("id") String reservation_id){
         if(id == null || id.isEmpty()){
-            return "login_company_page";
+            return "company/login_company_page";
         }
         Optional <ReservationModel> optionalReservationModel = reservationRepo.findById(reservation_id);
         ReservationModel reservationModel = optionalReservationModel.get();
@@ -78,13 +78,13 @@ public class ReservationController {
     @GetMapping("/user/reservation")
     public String getReservationPage(@CookieValue(name = "id", required = false) String id, Model model){
         if(id == null || id.isEmpty()){
-            return "login_page";
+            return "user/login_page";
         }
         System.out.println("ID cookie value: " + id);
         model.addAttribute("reservationRequest", new ReservationModel());
         model.addAttribute("boats", boatService.getAllBoats());
         model.addAttribute("users", userService.getAllUsers());
-        return "reservation_page";
+        return "user/reservation_page";
     }
 
     @PostMapping("/user/reservation")

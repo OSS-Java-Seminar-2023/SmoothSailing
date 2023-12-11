@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" >
-<head>
+<head th:replace="fragments/header :: head">
     <meta charset="UTF-8">
     <title>Register page</title>
 </head>
 <body>
-<div>
+<div th:replace="fragments/header :: header"></div>
+<div th:fragment="content">
     <form method="post" action="/crew/register" th:object="${registerRequest}">
         <h2>Register crew member</h2>
         <div>
@@ -37,5 +38,6 @@
         <a href="/">Navigate to main</a>
     </form>
 </div>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
