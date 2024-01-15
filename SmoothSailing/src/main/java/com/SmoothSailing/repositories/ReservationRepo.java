@@ -21,6 +21,8 @@ public interface ReservationRepo extends JpaRepository<ReservationModel, String>
     @Query("SELECT NEW com.SmoothSailing.dto.ReservationDatesDto(r.startDate, r.endDate) FROM ReservationModel r WHERE r.boat_id.id = :boatId")
     List<ReservationDatesDto> findAllDatesByBoatID(@Param("boatId") String boatId);
 
+    @Query("SELECT NEW com.SmoothSailing.dto.ReservationDatesDto(r.startDate, r.endDate) FROM ReservationModel r")
+    List<ReservationDatesDto> findAllDates();
 
     @Query("SELECT r FROM ReservationModel r Where r.boat_id.id = :id")
     List<ReservationModel> findAllByBoat(@Param("id") String id);

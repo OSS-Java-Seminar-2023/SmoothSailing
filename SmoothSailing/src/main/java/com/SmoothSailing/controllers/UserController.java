@@ -72,8 +72,11 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout(HttpServletResponse response){
-        Cookie cookie = new Cookie("id", null);
+        Cookie cookie = new Cookie("id", "");
         cookie.setMaxAge(0);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
         return "user/login_page";
     }

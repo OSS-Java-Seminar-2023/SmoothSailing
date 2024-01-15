@@ -14,4 +14,5 @@ public interface BoatRepo extends JpaRepository<BoatModel, String> {
 
     @Query("SELECT b FROM BoatModel b WHERE b.company_id.id = :id")
     List<BoatModel> findAllByCompanyID(@Param("id") String id);
+
 }

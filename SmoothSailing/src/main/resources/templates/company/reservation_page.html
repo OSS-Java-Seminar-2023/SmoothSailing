@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Choose dates</title>
+</head>
+<body>
+<div>
+    <form method="post" action="/user/available_boats">
+        <h2>Choose dates:</h2>
+        <div>
+            <label for="startDate">Start date (date and time):</label>
+            <input type="datetime-local" id="startDate" name="startDate">
+        </div>
+        <div>
+            <label for="endDate">End date (date and time):</label>
+            <input type="datetime-local" id="endDate" name="endDate">
+        </div>
+        <div>
+            <input type="submit" name="sign-in" value="Search">
+        </div>
+        <a href="/">Navigate to main</a>
+    </form>
+</div>
+</body>
+</html>

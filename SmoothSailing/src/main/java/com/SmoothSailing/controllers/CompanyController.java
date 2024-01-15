@@ -67,8 +67,11 @@ public class CompanyController {
 
     @GetMapping("/logout")
     public String logout(HttpServletResponse response){
-        Cookie cookie = new Cookie("id", null);
+        Cookie cookie = new Cookie("company_id", "");
         cookie.setMaxAge(0);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
         return "company/login_company_page";
     }
