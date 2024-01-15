@@ -2,12 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
-    <title>Register Company</title>
+    <title>Choose dates</title>
 </head>
 <body>
 <div>
-    <form method="post" action="/user/reservation" th:object="${reservationRequest}">
-        <h2>Register company</h2>
+    <form method="post" action="/user/available_boats">
+        <h2>Choose dates:</h2>
         <div>
             <label for="startDate">Start date (date and time):</label>
             <input type="datetime-local" id="startDate" name="startDate">
@@ -17,16 +17,7 @@
             <input type="datetime-local" id="endDate" name="endDate">
         </div>
         <div>
-            <input type="text" name="downPayment" placeholder="downPayment" required>
-        </div>
-        <div>
-            <label>Choose a boat:</label>
-            <select th:field="*{boat_id}">
-                <option th:each="boat : ${boats}" th:value="${boat.id}" th:text="${boat.name}"></option>
-            </select>
-        </div>
-        <div>
-            <input type="submit" name="sign-in" value="Reserve">
+            <input type="submit" name="sign-in" value="Search">
         </div>
         <a href="/">Navigate to main</a>
     </form>
