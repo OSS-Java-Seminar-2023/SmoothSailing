@@ -17,6 +17,17 @@
             <input type="datetime-local" id="endDate" name="endDate">
         </div>
         <div>
+            <label for="passengerCapacity">Passenger capacity (between 1 and 10):</label>
+            <input type="number" id="passengerCapacity" name="passengerCapacity" min="1" max="10">
+        </div>
+        <div th:if="${licence == 'Yes'}">
+            <p>Do you want crew members?</p>
+            <input type="radio" id="yes" name="crew_choice" value="Yes">
+            <label for="yes">Yes</label><br>
+            <input type="radio" id="no" name="crew_choice" value="No">
+            <label for="no">No</label><br>
+        </div>
+        <div>
             <input type="submit" name="sign-in" value="Search">
         </div>
         <a href="/">Navigate to main</a>

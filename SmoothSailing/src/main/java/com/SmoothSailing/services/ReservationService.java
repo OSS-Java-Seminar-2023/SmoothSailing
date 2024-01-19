@@ -8,11 +8,10 @@ import com.SmoothSailing.repositories.BoatRepo;
 import com.SmoothSailing.repositories.ReservationRepo;
 import com.SmoothSailing.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -96,13 +95,12 @@ public class ReservationService {
         return reservations;
     }
 
-    public Page<BoatModel> findAvailableBoats(Pageable pageable, Date newStartDate, Date newEndDate){
+    public Page<BoatModel> findAvailableBoats(Pageable pageable, Date newStartDate, Date newEndDate, Integer passengerCapacity, String search){
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
 
         List <BoatModel> unavailableBoats = new ArrayList<>();
-
         List <BoatModel> availableBoats = new ArrayList<>();
 
         List <ReservationModel> reservations = reservationRepo.findAll();
@@ -113,7 +111,13 @@ public class ReservationService {
             }
         }
 
-        List<BoatModel> allBoats = boatRepo.findAll();
+        List<BoatModel> allBoats;
+
+        if (search != null){
+            allBoats = boatRepo.findAllByPassengerCapacityAndSearch(passengerCapacity, search, pageable.getSort());
+        } else {
+            allBoats = boatRepo.findAllByPassengerCapacity(passengerCapacity, pageable.getSort());
+        }
 
         for (BoatModel boat : allBoats) {
             if (!unavailableBoats.contains(boat)) {
@@ -130,8 +134,19 @@ public class ReservationService {
             list = availableBoats.subList(startItem, toIndex);
         }
 
-        Page<BoatModel> boatPage = new PageImpl<BoatModel>(list, PageRequest.of(currentPage, pageSize), availableBoats.size());
+        Sort sort = pageable.getSort();
+        Page<BoatModel> boatPage = new PageImpl<BoatModel>(list, PageRequest.of(currentPage, pageSize, sort), availableBoats.size());
 
         return boatPage;
+    }
+
+    public Integer calculateDurationOfReservation(Date startDate, Date endDate) {
+        long durationInMillis = Math.abs(endDate.getTime() - startDate.getTime());
+
+        long durationInDays = TimeUnit.MILLISECONDS.toDays(durationInMillis);
+
+        Integer numberOfDays = Math.toIntExact(durationInDays);
+
+        return numberOfDays;
     }
 }

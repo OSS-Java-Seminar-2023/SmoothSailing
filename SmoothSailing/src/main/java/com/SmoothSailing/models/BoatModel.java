@@ -16,7 +16,7 @@ public class BoatModel {
     @Column
     private String img;
     @Column
-    private String price;
+    private int price;
     @Column
     private String availability;
     @Column

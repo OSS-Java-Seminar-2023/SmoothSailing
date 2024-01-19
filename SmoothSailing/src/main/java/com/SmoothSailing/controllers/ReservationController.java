@@ -12,6 +12,9 @@ import com.SmoothSailing.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,10 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -99,7 +99,11 @@ public class ReservationController {
         }
         System.out.println("ID cookie value: " + id);
 
+        Optional<UserModel> optionalUserModel = userRepo.findById(id);
+        UserModel userModel = optionalUserModel.get();
+
         model.addAttribute("reservationRequest", new ReservationModel());
+        model.addAttribute("licence", userModel.getLicense());
 
         return "user/reservation_page";
     }
@@ -108,18 +112,41 @@ public class ReservationController {
     public String getAvailableBoatsPage( @CookieValue(name = "id", required = false) String id,
             @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date newStartDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date newEndDate,
+            @RequestParam("passengerCapacity") Integer passengerCapacity,
+            @RequestParam("crew_choice") String crewChoice,
+            @RequestParam(value = "sort", defaultValue = "name,asc") String[] sort,
+            @RequestParam(value = "search", required = false) String search,
             @RequestParam("page") Optional<Integer> page,
             @RequestParam("size") Optional<Integer> size,
             Model model) {
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(1);
+        int pageSize = size.orElse(2);
 
-        Page<BoatModel> boatPage = reservationService.findAvailableBoats(PageRequest.of(currentPage - 1, pageSize), newStartDate,newEndDate);
+        String sortField = sort[0];
+        String sortDirection = sort[1];
 
-        model.addAttribute("reservationRequest", new ReservationModel());
+        Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Order order = new Order(direction, sortField);
+
+        Page<BoatModel> boatPage = reservationService.findAvailableBoats(PageRequest.of(currentPage - 1, pageSize, Sort.by(order)), newStartDate,newEndDate, passengerCapacity, search);
+
+        ReservationModel reservationRequest = new ReservationModel();
+        reservationRequest.setStartDate(newStartDate);
+        reservationRequest.setEndDate(newEndDate);
+
+        Integer duration = reservationService.calculateDurationOfReservation(newStartDate,newEndDate);
+
+        model.addAttribute("reservationRequest", reservationRequest);
         model.addAttribute("startDate", newStartDate);
         model.addAttribute("endDate", newEndDate);
         model.addAttribute("boatPage", boatPage);
+        model.addAttribute("duration" , duration);
+        model.addAttribute("passengerCapacity", passengerCapacity);
+        model.addAttribute("crewChoice", crewChoice);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("reverseSortDirection", sortDirection.equals("asc") ? "desc" : "asc");
+        model.addAttribute("search", search);
 
         int totalPages = boatPage.getTotalPages();
         if(totalPages > 0) {
@@ -133,10 +160,14 @@ public class ReservationController {
     }
 
     @PostMapping("/user/make_reservation")
-    public String makeReservation(@CookieValue(name = "id", required = false) String id,ReservationModel reservationModel){
+    public String makeReservation(@CookieValue(name = "id", required = false) String id,@RequestParam("boat_id") String boatId, ReservationModel reservationModel){
         Optional<UserModel> optionalUserModel = userRepo.findById(id);
         UserModel userModel = optionalUserModel.get();
         reservationModel.setUser_id(userModel);
+
+        Optional<BoatModel> optionalBoatModel = boatRepo.findById(boatId);
+        BoatModel boatModel = optionalBoatModel.get();
+        reservationModel.setBoat_id(boatModel);
 
         System.out.println("Reservation request: " + reservationModel);
         reservationModel.setStatus("Pending");

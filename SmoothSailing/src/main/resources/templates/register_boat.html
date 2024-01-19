@@ -6,10 +6,11 @@
 </head>
 <body>
 <div>
-    <form method="post" action="/boat/register" th:object="${registerBoatRequest}">
+    <form method="post" action="/boat/register" th:object="${registerBoatRequest}" enctype="multipart/form-data">
         <h2>Register Boat</h2>
         <div>
-            <input type="text" name="img" placeholder="img" required>
+            <label for="image">Choose Image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
         </div>
         <div>
             <input type="text" name="price" placeholder="price" required>
