@@ -26,4 +26,7 @@ public interface ReservationRepo extends JpaRepository<ReservationModel, String>
 
     @Query("SELECT r FROM ReservationModel r Where r.boat_id.id = :id")
     List<ReservationModel> findAllByBoat(@Param("id") String id);
+
+    @Query("SELECT r FROM ReservationModel r Where r.user_id.id = :id")
+    List<ReservationModel> findAllByUserId(@Param("id") String id);
 }

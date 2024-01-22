@@ -53,8 +53,9 @@ public class ReservationController {
         if(id == null || id.isEmpty()){
             return "company/login_company_page";
         }
+        //preko company id-a koji smo dobili iz cookie-a dohvacamo brodeve za tu firmu
         List<BoatModel> boatModels = boatRepo.findAllByCompanyID(id);
-
+        //za svaki brod spremamo rezervacije u listu
         List<ReservationModel> reservations = new ArrayList<>();
         for (BoatModel boatModel : boatModels) {
             reservations.addAll(reservationRepo.findAllByBoat(boatModel.getId()));
@@ -66,11 +67,22 @@ public class ReservationController {
         return "company/company_reservations";
     }
 
+    @GetMapping("/user/reservations")
+    public String getUserReservations(@CookieValue(name = "id", required = false) String id, Model model){
+        if(id == null || id.isEmpty())
+            return "user/login_page";
+        List<ReservationModel> reservations = reservationService.findAllReservations(id);
+        System.out.println(reservations);
+        model.addAttribute("reservations", reservations);
+        return "user/user_reservations";
+    }
+
     @PostMapping("/company/reservation/confirm")
     public String confirmReservation(@CookieValue(name = "company_id", required = false) String id,@RequestParam("id") String reservation_id){
         if(id == null || id.isEmpty()){
             return "company/login_company_page";
         }
+        //iz paramsa dohvacamo id rezervacije te je dohvacamo iz repozitorija pa postavljamo status te rezervacije "Confirmed"
         Optional <ReservationModel> optionalReservationModel = reservationRepo.findById(reservation_id);
         ReservationModel reservationModel = optionalReservationModel.get();
         reservationModel.setStatus("Confirmed");
@@ -84,6 +96,7 @@ public class ReservationController {
         if(id == null || id.isEmpty()){
             return "company/login_company_page";
         }
+        //iz paramsa dohvacamo id rezervacije te je dohvacamo iz repozitorija pa postavljamo status te rezervacije "Deny"
         Optional <ReservationModel> optionalReservationModel = reservationRepo.findById(reservation_id);
         ReservationModel reservationModel = optionalReservationModel.get();
         reservationModel.setStatus("Denied");
@@ -161,10 +174,14 @@ public class ReservationController {
 
     @PostMapping("/user/make_reservation")
     public String makeReservation(@CookieValue(name = "id", required = false) String id,@RequestParam("boat_id") String boatId, ReservationModel reservationModel){
+        if(id == null || id.isEmpty()){
+            return "user/login_page";
+        }
+        //dphvacamo id usera i cookie i dohvacamo ga iz baze i spemamo u reservationModel
         Optional<UserModel> optionalUserModel = userRepo.findById(id);
         UserModel userModel = optionalUserModel.get();
         reservationModel.setUser_id(userModel);
-
+        //dphvacamo id broda iz paramsa i dohvacamo ga iz baze i spemamo u reservationModel
         Optional<BoatModel> optionalBoatModel = boatRepo.findById(boatId);
         BoatModel boatModel = optionalBoatModel.get();
         reservationModel.setBoat_id(boatModel);
@@ -174,5 +191,14 @@ public class ReservationController {
 
         ReservationModel reservationAttempt = reservationService.saveReservation(reservationModel);
         return reservationAttempt == null ? "error_page" : "redirect:/";
+    }
+
+    @GetMapping("/")
+    public String checkCookie(@CookieValue(name = "name", required = false) String name, Model model) {
+        if (name == null || name.isEmpty()) {
+            name = "logout";
+        }
+        model.addAttribute("authorize", name);
+        return "index";
     }
 }

@@ -1,37 +1,49 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" >
-<head>
+<head th:replace="~{fragments/header :: head}">
     <meta charset="UTF-8">
-    <title>Choose dates</title>
+    <title>Reservation page</title>
 </head>
-<body>
-<div>
-    <form method="post" action="/user/available_boats">
-        <h2>Choose dates:</h2>
-        <div>
-            <label for="startDate">Start date (date and time):</label>
-            <input type="datetime-local" id="startDate" name="startDate">
-        </div>
-        <div>
-            <label for="endDate">End date (date and time):</label>
-            <input type="datetime-local" id="endDate" name="endDate">
-        </div>
-        <div>
-            <label for="passengerCapacity">Passenger capacity (between 1 and 10):</label>
-            <input type="number" id="passengerCapacity" name="passengerCapacity" min="1" max="10">
-        </div>
-        <div th:if="${licence == 'Yes'}">
-            <p>Do you want crew members?</p>
-            <input type="radio" id="yes" name="crew_choice" value="Yes">
-            <label for="yes">Yes</label><br>
-            <input type="radio" id="no" name="crew_choice" value="No">
-            <label for="no">No</label><br>
-        </div>
-        <div>
-            <input type="submit" name="sign-in" value="Search">
-        </div>
-        <a href="/">Navigate to main</a>
-    </form>
-</div>
+<body style="background:#e9e9e9;">
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="container mt-5 w-25">
+        <form method="post" action="/user/available_boats" class="needs-validation">
+            <h2>Choose dates:</h2>
+
+            <div class="form-group">
+                <label for="startDate">Start date (date and time):</label>
+                <input type="datetime-local" id="startDate" name="startDate" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="endDate">End date (date and time):</label>
+                <input type="datetime-local" id="endDate" name="endDate" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="passengerCapacity">Passenger capacity (between 1 and 10):</label>
+                <input type="number" id="passengerCapacity" name="passengerCapacity" class="form-control" min="1" max="10" required>
+            </div>
+
+            <div class="form-group d-flex" th:if="${licence == 'Yes'}">
+                <p>Do you want crew members?</p>
+                <div class="form-check mx-2">
+                    <input type="radio" id="yes" name="crew_choice" value="Yes" class="form-check-input">
+                    <label for="yes" class="form-check-label">Yes</label>
+                </div>
+                <div class="form-check mx-2">
+                    <input type="radio" id="no" name="crew_choice" value="No" class="form-check-input">
+                    <label for="no" class="form-check-label">No</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" name="sign-in" class="btn btn-primary">Search</button>
+            </div>
+
+            <a href="/" class="btn btn-link">Navigate to main</a>
+        </form>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

@@ -38,15 +38,22 @@ public class ReservationService {
         return reservationRepo.findAllDatesByBoatID(boat_id);
     }
 
-    public ReservationModel saveReservation(ReservationModel reservationModel) {
+    public List<ReservationModel> findAllReservations(String id){
+        return reservationRepo.findAllByUserId(id);
+    }
 
+    public ReservationModel saveReservation(ReservationModel reservationModel) {
+        //gleda jeli start date postavljen posli end date ako je baca null
         if (reservationModel.getStartDate().after(reservationModel.getEndDate())) {
             System.out.println("Start date cannot be after end date!");
             return null;
         }
 
+        //gledamo sa funkcijom getAllReservationBoatID jeli sadrži brod u rezervacijama jer ako se nalazi onda moramo viditi jeli se preklapa nova
+        //rezervacija sa starima
         if(getAllReservationBoatID().contains(UUID.fromString(reservationModel.getBoat_id().getId()))){
-
+            //Dohvacamo sve rezervacije za neki brod po ID-u pa u petlji gledamo jeli se trenutna rezervacija preklapa sa prijasnjim rezervacijama tog broda
+            //ako je vracamo null ako nije nastavimo dalje s kodom i spremimo u bazu
             List <ReservationDatesDto> dateRows = getAllDatesByBoatID((reservationModel.getBoat_id().getId()));
             for (ReservationDatesDto dateRow : dateRows) {
                 if( checkDatesOverlap(reservationModel.getStartDate(), reservationModel.getEndDate(), dateRow.getStartDate(), dateRow.getEndDate()) ){
@@ -55,19 +62,14 @@ public class ReservationService {
                 }
             }
         }
-
         return reservationRepo.save(reservationModel);
     }
 
     public boolean checkDatesOverlap(Date newStartDate, Date newEndDate, Date existingStartDate, Date existingEndDate) {
-
-        if ((newStartDate.after(existingStartDate) && newStartDate.before(existingEndDate))
-                || (newEndDate.after(existingStartDate) && newEndDate.before(existingEndDate))
-                || (newStartDate.before(existingStartDate) && newEndDate.after(existingEndDate))) {
-            return true;
-        }
-
-        return false;
+        //Sa ovom smo funkcijom gledali jeli se datumi preklapaju u funkciji saveReservation
+        if(newStartDate.after(existingEndDate) || newEndDate.before(existingStartDate))
+            return false;
+        return true;
     }
 
     public List<ReservationModel> checkReservationStatus(List<ReservationModel> reservations){
@@ -77,10 +79,14 @@ public class ReservationService {
             Date startDate = reservation.getStartDate();
             Date endDate = reservation.getEndDate();
 
+            //ako je trenutni datum u rasponu rezervacije i ako je status "Confirmed" postavljamo status "In progress"
             if (currentDate.after(startDate) && currentDate.before(endDate) && reservation.getStatus().equals("Confirmed")) {
                 reservation.setStatus("In progress");
                 reservationRepo.save(reservation);
-            } else if(currentDate.after(startDate) && currentDate.before(endDate) && reservation.getStatus().equals("Pending")) {
+            }
+            //ako je trenutni datum u rasponu rezervacije i ako je status "Pending" postavljamo status "Denied" jer je trenutni dazum prosa
+            //pocetak kretanja a jos je u pendingu
+            else if(currentDate.after(startDate) && currentDate.before(endDate) && reservation.getStatus().equals("Pending")) {
                 reservation.setStatus("Denied");
                 reservationRepo.save(reservation);
             } else if (currentDate.after(endDate) && (reservation.getStatus().equals("Confirmed") || reservation.getStatus().equals("In progress"))) {

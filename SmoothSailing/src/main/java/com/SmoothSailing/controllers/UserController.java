@@ -62,7 +62,12 @@ public class UserController {
             cookie.setHttpOnly(true);
             cookie.setPath("/");
             response.addCookie(cookie);
-
+            Cookie cookieName = new Cookie("name", "user");
+            cookieName.setMaxAge(3600);
+            cookieName.setSecure(true);
+            cookieName.setHttpOnly(true);
+            cookieName.setPath("/");
+            response.addCookie(cookieName);
             return "user/personal_page";
         }
         else{
@@ -78,7 +83,14 @@ public class UserController {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
-        return "user/login_page";
+
+        Cookie name = new Cookie("name", null);
+        name.setMaxAge(0);
+        name.setSecure(true);
+        name.setHttpOnly(true);
+        name.setPath("/");
+        response.addCookie(name);
+        return "redirect:/";
     }
 
     @GetMapping("/edit/{id}")

@@ -13,62 +13,41 @@
 </head>
 <body>
 <div th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="/">Smooth Sailing</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav">
+            <div class="collapse navbar-collapse">
+                <ul th:if="${authorize == 'company'}" class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            User
-                        </a>
-                        <ul class="dropdown-menu bg-dark text-light">
-                            <li><a class="dropdown-item text-light" href="/user/register">Register</a></li>
-                            <li><a class="dropdown-item text-light" href="/user/login">Login</a></li>
-                            <li><a class="dropdown-item text-light" href="/user/list">List</a></li>
-                            <li><a class="dropdown-item text-light" href="/user/reservation">Reserve boat</a></li>
-                            <li><a class="dropdown-item text-light" href="/user/logout">Logout</a></li>
-                        </ul>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Company
-                        </a>
-                        <ul class="dropdown-menu bg-dark text-light">
-                            <li><a class="dropdown-item text-light" href="/company/register">Register</a></li>
-                            <li><a class="dropdown-item text-light" href="/company/login">Login</a></li>
-                            <li><a class="dropdown-item text-light" href="/company/list">List</a></li>
-                            <li><a class="dropdown-item text-light" href="/company/reservations">Reserve boat</a></li>
-                            <li><a class="dropdown-item text-light" href="/company/logout">Logout</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Add Boat</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Boat
-                        </a>
-                        <ul class="dropdown-menu bg-dark text-light">
-                            <li><a class="dropdown-item text-light" href="/boat/register">Register</a></li>
-                            <li><a class="dropdown-item text-light" href="/boat/list">List</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Boat List</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Crew
-                        </a>
-                        <ul class="dropdown-menu bg-dark">
-                            <li><a class="dropdown-item text-light" href="/crew/register">Register</a></li>
-                            <li><a class="dropdown-item text-light" href="/crew/list">List</a></li>
-                            <li><a class="dropdown-item text-light" href="/crew/list/cook">Cooks</a></li>
-                            <li><a class="dropdown-item text-light" href="/crew/list/bartender">Bartenders</a></li>
-                            <li><a class="dropdown-item text-light" href="/crew/list/sailor">Sailors</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Reservations</a>
                     </li>
                 </ul>
+                <ul th:if="${authorize != 'company'}" class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/reservation">Make Reservation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/reservations">Reservations</a>
+                    </li>
+                </ul>
+                <span th:if="${authorize == 'logout'}" class="navbar-text"><a class="nav-link" href="/user/login">Login</a></span>
+                <span th:if="${authorize == 'company'}" class="navbar-text"><a class="nav-link" href="/company/logout">Logout</a></span>
+                <span th:if="${authorize == 'user'}" class="navbar-text"><a class="nav-link" href="/user/logout">Logout</a></span>
             </div>
         </div>
     </nav>
