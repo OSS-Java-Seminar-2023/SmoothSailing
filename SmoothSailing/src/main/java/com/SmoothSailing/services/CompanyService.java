@@ -1,14 +1,16 @@
 package com.SmoothSailing.services;
 
 import com.SmoothSailing.dto.CompanyRegisterDto;
-import com.SmoothSailing.dto.UserRegisterDto;
+import com.SmoothSailing.models.BoatModel;
 import com.SmoothSailing.models.CompanyModel;
-import com.SmoothSailing.models.UserModel;
+import com.SmoothSailing.repositories.BoatRepo;
 import com.SmoothSailing.repositories.CompanyRepo;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +18,12 @@ import java.util.Optional;
 public class CompanyService {
     public final CompanyRepo companyRepo;
 
+    public final BoatRepo boatRepo;
+
     @Autowired
-    public CompanyService(CompanyRepo companyRepo){
+    public CompanyService(CompanyRepo companyRepo, BoatRepo boatRepo){
         this.companyRepo=companyRepo;
+        this.boatRepo = boatRepo;
     }
 
     public CompanyModel registerCompany(CompanyRegisterDto companyRegisterDto){
@@ -75,4 +80,9 @@ public class CompanyService {
     public void deleteById(String id){
         companyRepo.deleteById(id);
     }
+
+    public List<BoatModel> getBoatsByCompanyId(String id, int page){
+        return boatRepo.findAllByCompanyId(id, PageRequest.of(page, 5)).getContent();
+    }
+
 }

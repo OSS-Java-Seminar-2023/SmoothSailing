@@ -62,13 +62,14 @@ public class UserController {
             cookie.setHttpOnly(true);
             cookie.setPath("/");
             response.addCookie(cookie);
+
             Cookie cookieName = new Cookie("name", "user");
             cookieName.setMaxAge(3600);
             cookieName.setSecure(true);
             cookieName.setHttpOnly(true);
             cookieName.setPath("/");
             response.addCookie(cookieName);
-            return "user/personal_page";
+            return "redirect:/user/profile";
         }
         else{
             return "error_page";
@@ -122,5 +123,18 @@ public class UserController {
     public String changePassword(@PathVariable("id") String id, @ModelAttribute ChangeUserPassDto changeUserPassDto){
         userService.changePass(id, changeUserPassDto.getPassword());
         return "redirect:/user/list";
+    }
+
+    @GetMapping("/profile")
+    public String profilePage(@CookieValue(name = "id", required = false) String id, Model model){
+
+        if(id == null || id.isEmpty()){
+            return "user/login_page";
+        }
+
+        Optional<UserModel> user = userService.getUserById(id);
+        user.ifPresent(userModel -> model.addAttribute("profile", userModel));
+
+        return "user/personal_page";
     }
 }

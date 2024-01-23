@@ -25,13 +25,16 @@
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Add Boat</a>
+                        <a class="nav-link" href="/boat/register">Add Boat</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Boat List</a>
+                        <a class="nav-link" href="/company/boat-list?page=0">Boat List</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Reservations</a>
+                        <a class="nav-link" href="/company/reservations">Reservations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/company/profile">Company Page</a>
                     </li>
                 </ul>
                 <ul th:if="${authorize != 'company'}" class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -43,6 +46,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/user/reservations">Reservations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/profile">Profile Page</a>
                     </li>
                 </ul>
                 <span th:if="${authorize == 'logout'}" class="navbar-text"><a class="nav-link" href="/user/login">Login</a></span>

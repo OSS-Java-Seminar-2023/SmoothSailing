@@ -4,6 +4,7 @@ import com.SmoothSailing.dto.ChangeUserPassDto;
 import com.SmoothSailing.dto.CompanyRegisterDto;
 import com.SmoothSailing.dto.UserLoginDto;
 import com.SmoothSailing.dto.UserRegisterDto;
+import com.SmoothSailing.models.BoatModel;
 import com.SmoothSailing.models.CompanyModel;
 import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.repositories.CompanyRepo;
@@ -11,11 +12,13 @@ import com.SmoothSailing.services.CompanyService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -58,10 +61,17 @@ public class CompanyController {
             cookie.setPath("/");
             response.addCookie(cookie);
 
-            return "company/company_page";
+            Cookie cookieName = new Cookie("name", "company");
+            cookieName.setMaxAge(3600);
+            cookieName.setSecure(true);
+            cookieName.setHttpOnly(true);
+            cookieName.setPath("/");
+            response.addCookie(cookieName);
+
+            return "redirect:/";
         }
         else{
-            return "error page";
+            return "error_page";
         }
     }
 
@@ -73,7 +83,15 @@ public class CompanyController {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
-        return "company/login_company_page";
+
+        Cookie name = new Cookie("name", null);
+        name.setMaxAge(0);
+        name.setSecure(true);
+        name.setHttpOnly(true);
+        name.setPath("/");
+        response.addCookie(name);
+
+        return "redirect:/";
     }
 
     @GetMapping(path="/list")
@@ -112,5 +130,31 @@ public class CompanyController {
     public String delete(@PathVariable("id") String id){
         companyService.deleteById(id);
         return "redirect:/company/list";
+    }
+
+    @GetMapping("/profile")
+    public String profilePage(@CookieValue(name = "company_id", required = false) String id, Model model){
+
+        if(id == null || id.isEmpty()){
+            return "company/login_page";
+        }
+
+        Optional<CompanyModel> company = companyService.getById(id);
+        company.ifPresent(companyModel -> model.addAttribute("profile", companyModel));
+
+        return "company/company_page";
+    }
+
+    @GetMapping("/boat-list")
+    public String companyBoatList(@CookieValue(name = "company_id", required = false) String id, Model model, @RequestParam Map<String, String> allParams){
+
+        if(id == null || id.isEmpty()){
+            return "company/login_company_page";
+        }
+
+        List<BoatModel> boatPage = companyService.getBoatsByCompanyId(id, Integer.parseInt(allParams.get("page")));
+        model.addAttribute("boats", boatPage);
+
+        return "company/boat_list";
     }
 }

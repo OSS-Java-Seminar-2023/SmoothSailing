@@ -12,6 +12,8 @@ import java.util.UUID;
 
 @Repository
 public interface BoatRepo extends JpaRepository<BoatModel, String> {
+    @Query("SELECT b FROM BoatModel b WHERE b.company_id.id = :companyId")
+    Page<BoatModel> findAllByCompanyId(@Param("companyId") String companyId, Pageable pageable);
 
     @Query("SELECT b FROM BoatModel b WHERE b.company_id.id = :id")
     List<BoatModel> findAllByCompanyID(@Param("id") String id);
