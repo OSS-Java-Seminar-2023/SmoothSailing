@@ -18,7 +18,7 @@ public interface ReservationRepo extends JpaRepository<ReservationModel, String>
     @Query("SELECT r.boat_id.id FROM ReservationModel r")
     List<UUID> findAllBoatID();
 
-    @Query("SELECT NEW com.SmoothSailing.dto.ReservationDatesDto(r.startDate, r.endDate) FROM ReservationModel r WHERE r.boat_id.id = :boatId")
+    @Query("SELECT NEW com.SmoothSailing.dto.ReservationDatesDto(r.startDate, r.endDate) FROM ReservationModel r WHERE r.boat_id.id = :boatId  AND r.status <> 'Denied'")
     List<ReservationDatesDto> findAllDatesByBoatID(@Param("boatId") String boatId);
 
     @Query("SELECT NEW com.SmoothSailing.dto.ReservationDatesDto(r.startDate, r.endDate) FROM ReservationModel r")

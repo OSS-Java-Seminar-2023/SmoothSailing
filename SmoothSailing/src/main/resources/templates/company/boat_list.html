@@ -30,7 +30,7 @@
                 <td class="align-middle" th:text="${boat.type}"></td>
                 <td class="align-middle" th:text="${boat.crewCapacity}"></td>
                 <td class="align-middle" th:text="${boat.passengerCapacity}"></td>
-                <td><a th:href="@{'/boat/edit' + ${boat.id}}">Edit</a></td>
+                <td><a th:href="@{'/boat/edit/' + ${boat.id}}">Edit</a></td>
                 <td><a th:href="@{'/boat/delete/' + ${boat.id}}">Delete</a></td>
             </tr>
             <tr th:if="${boats.isEmpty()}">

@@ -1,5 +1,6 @@
 package com.SmoothSailing.services;
 
+import com.SmoothSailing.dto.BoatRegisterDto;
 import com.SmoothSailing.dto.ReservationDatesDto;
 import com.SmoothSailing.models.BoatModel;
 import com.SmoothSailing.models.ReservationModel;
@@ -48,15 +49,16 @@ public class ReservationService {
             System.out.println("Start date cannot be after end date!");
             return null;
         }
-
+        System.out.println(reservationModel.getStatus().toLowerCase());
         //gledamo sa funkcijom getAllReservationBoatID jeli sadrži brod u rezervacijama jer ako se nalazi onda moramo viditi jeli se preklapa nova
         //rezervacija sa starima
         if(getAllReservationBoatID().contains(UUID.fromString(reservationModel.getBoat_id().getId()))){
             //Dohvacamo sve rezervacije za neki brod po ID-u pa u petlji gledamo jeli se trenutna rezervacija preklapa sa prijasnjim rezervacijama tog broda
             //ako je vracamo null ako nije nastavimo dalje s kodom i spremimo u bazu
+
             List <ReservationDatesDto> dateRows = getAllDatesByBoatID((reservationModel.getBoat_id().getId()));
             for (ReservationDatesDto dateRow : dateRows) {
-                if( checkDatesOverlap(reservationModel.getStartDate(), reservationModel.getEndDate(), dateRow.getStartDate(), dateRow.getEndDate()) ){
+                if(checkDatesOverlap(reservationModel.getStartDate(), reservationModel.getEndDate(), dateRow.getStartDate(), dateRow.getEndDate())){
                     System.out.println("There is already a reservation during this time!");
                     return null;
                 }
@@ -112,7 +114,7 @@ public class ReservationService {
         List <ReservationModel> reservations = reservationRepo.findAll();
 
         for (ReservationModel reservation : reservations) {
-            if( checkDatesOverlap(newStartDate, newEndDate, reservation.getStartDate(), reservation.getEndDate()) ){
+            if( checkDatesOverlap(newStartDate, newEndDate, reservation.getStartDate(), reservation.getEndDate())  && !Objects.equals(reservation.getStatus().toLowerCase(), "denied")){
                 unavailableBoats.add(reservation.getBoat_id());
             }
         }
@@ -154,5 +156,16 @@ public class ReservationService {
         Integer numberOfDays = Math.toIntExact(durationInDays);
 
         return numberOfDays;
+    }
+
+    public void editStatus(String reservation_id, String status){
+        reservationRepo.findById(reservation_id).map(reservationModel -> {
+            reservationModel.setStatus(status);
+            return reservationRepo.save(reservationModel);
+        });
+    }
+
+    public void delete(String id){
+        reservationRepo.deleteById(id);
     }
 }

@@ -22,15 +22,14 @@
                     <td class="align-middle" th:text="${reservation.endDate}"></td>
                     <td class="align-middle" th:text="${reservation.status}"></td>
                     <td class="align-middle" th:text="${reservation.boat_id.name}"></td>
-                    <td><a th:href="@{'/crew/' + ${reservation.id}}">Edit</a></td>
-                    <td><a th:href="@{'/crew/delete/' + ${reservation.id}}">Delete</a></td>
+                    <td><a th:href="@{'/reservation/delete/' + ${reservation.id}}" class="btn btn-danger">Delete</a></td>
                 </tr>
                 <tr th:if="${reservations.isEmpty()}">
                     <td class="text-center" colspan="3">No Records found. Add some...!</td><a href="/user/reservation"></a>
                 </tr>
             </tbody>
         </table>
-        <button class="btn btn-primary text-white"><a href="/" class="text-white">Home</a></button>
+        <button class="btn btn-primary text-white"><a href="/" class="btn btn-primary">Home</a></button>
     </div>
     <div th:replace="~{fragments/footer :: footer}"></div>
 </body>

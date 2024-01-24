@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Pageable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +58,8 @@ public class CompanyService {
     public List<CompanyModel> getAllCompanies(){
         return companyRepo.findAll();
     }
+
+    public List<CompanyModel> getCompanyById(String id) { return companyRepo.findAllById(Collections.singleton(id)); }
 
     public void changePass(String id, String password){
         companyRepo.findById(id).map(userModel -> {

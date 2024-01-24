@@ -1,5 +1,6 @@
 package com.SmoothSailing.controllers;
 
+import com.SmoothSailing.dto.BoatRegisterDto;
 import com.SmoothSailing.models.BoatModel;
 import com.SmoothSailing.models.ReservationModel;
 import com.SmoothSailing.models.UserModel;
@@ -77,30 +78,13 @@ public class ReservationController {
         return "user/user_reservations";
     }
 
-    @PostMapping("/company/reservation/confirm")
-    public String confirmReservation(@CookieValue(name = "company_id", required = false) String id,@RequestParam("id") String reservation_id){
+    @PostMapping("/company/reservation/{status}")
+    public String changeReservationStatus(@CookieValue(name = "company_id", required = false) String id,@RequestParam("id") String reservation_id, @PathVariable("status") String status){
         if(id == null || id.isEmpty()){
             return "company/login_company_page";
         }
-        //iz paramsa dohvacamo id rezervacije te je dohvacamo iz repozitorija pa postavljamo status te rezervacije "Confirmed"
-        Optional <ReservationModel> optionalReservationModel = reservationRepo.findById(reservation_id);
-        ReservationModel reservationModel = optionalReservationModel.get();
-        reservationModel.setStatus("Confirmed");
-        reservationService.saveReservation(reservationModel);
-
-        return "redirect:/company/reservations";
-    }
-
-    @PostMapping("/company/reservation/deny")
-    public String denyReservation(@CookieValue(name = "company_id", required = false) String id,@RequestParam("id") String reservation_id){
-        if(id == null || id.isEmpty()){
-            return "company/login_company_page";
-        }
-        //iz paramsa dohvacamo id rezervacije te je dohvacamo iz repozitorija pa postavljamo status te rezervacije "Deny"
-        Optional <ReservationModel> optionalReservationModel = reservationRepo.findById(reservation_id);
-        ReservationModel reservationModel = optionalReservationModel.get();
-        reservationModel.setStatus("Denied");
-        reservationService.saveReservation(reservationModel);
+        System.out.println(reservation_id + "This is res id");
+        reservationService.editStatus(reservation_id, status.toUpperCase());
 
         return "redirect:/company/reservations";
     }
@@ -200,5 +184,11 @@ public class ReservationController {
         }
         model.addAttribute("authorize", name);
         return "index";
+    }
+
+    @GetMapping("/reservation/delete/{id}")
+    public String delete(@PathVariable("id") String id){
+        reservationService.delete(id);
+        return "redirect:/user/reservations";
     }
 }
