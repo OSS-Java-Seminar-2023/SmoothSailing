@@ -5,6 +5,7 @@ import com.SmoothSailing.dto.UserRegisterDto;
 import com.SmoothSailing.models.BoatModel;
 import com.SmoothSailing.repositories.BoatRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,6 +46,10 @@ public class BoatService {
 
     public void delete(String id){
         boatRepo.deleteById(id);
+    }
+
+    public List<BoatModel> getAll(int page){
+        return boatRepo.findAll(PageRequest.of(page, 5)).getContent();
     }
 
 }

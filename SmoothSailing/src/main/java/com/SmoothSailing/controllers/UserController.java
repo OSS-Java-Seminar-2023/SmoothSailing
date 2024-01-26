@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,10 +23,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(path="/list")
-    public String users(Model model){
-        List<UserModel> users = userService.getAllUsers();
-        model.addAttribute("userListRequest", users);
+    @GetMapping("/list")
+    public String list(@RequestParam Map<String, String> allParams, Model model){
+        model.addAttribute("userListRequest", userService.getAll(Integer.parseInt(allParams.get("page"))));
+        model.addAttribute("admin", true);
+        model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);
+        model.addAttribute("next", Integer.parseInt(allParams.get("page")) + 1);
         return "user/user_list";
     }
 
@@ -62,8 +65,8 @@ public class UserController {
             cookie.setHttpOnly(true);
             cookie.setPath("/");
             response.addCookie(cookie);
-
-            Cookie cookieName = new Cookie("name", "user");
+            String status = authenticated.getSuperuser() ? "admin" : "user";
+            Cookie cookieName = new Cookie("name", status);
             cookieName.setMaxAge(3600);
             cookieName.setSecure(true);
             cookieName.setHttpOnly(true);
@@ -104,13 +107,13 @@ public class UserController {
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable("id") String id, @ModelAttribute UserRegisterDto userDto){
         userService.editUser(id, userDto);
-        return "redirect:/user/list";
+        return "redirect:/user/list?page=0";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") String id){
         userService.deleteUserById(id);
-        return "redirect:/user/list";
+        return "redirect:/user/list?page=0";
     }
 
     @GetMapping("/change-password/{id}")
@@ -122,7 +125,7 @@ public class UserController {
     @PostMapping("/change-password/{id}")
     public String changePassword(@PathVariable("id") String id, @ModelAttribute ChangeUserPassDto changeUserPassDto){
         userService.changePass(id, changeUserPassDto.getPassword());
-        return "redirect:/user/list";
+        return "redirect:/";
     }
 
     @GetMapping("/profile")

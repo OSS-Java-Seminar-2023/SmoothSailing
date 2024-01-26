@@ -191,4 +191,13 @@ public class ReservationController {
         reservationService.delete(id);
         return "redirect:/user/reservations";
     }
+
+    @GetMapping("/reservations/list")
+    public String list(@RequestParam Map<String, String> allParams, Model model){
+        model.addAttribute("reservations", reservationService.getAll(Integer.parseInt(allParams.get("page"))));
+        model.addAttribute("admin", true);
+        model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);
+        model.addAttribute("next", Integer.parseInt(allParams.get("page")) + 1);
+        return "reservation_list";
+    }
 }

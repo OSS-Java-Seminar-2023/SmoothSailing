@@ -59,6 +59,10 @@ public class CompanyService {
         return companyRepo.findAll();
     }
 
+    public List<CompanyModel> getAll(int page){
+        return companyRepo.findAll(PageRequest.of(page, 5)).getContent();
+    }
+
     public List<CompanyModel> getCompanyById(String id) { return companyRepo.findAllById(Collections.singleton(id)); }
 
     public void changePass(String id, String password){

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -87,5 +88,14 @@ public class BoatController {
     public String delete(@PathVariable("id") String id){
         boatService.delete(id);
         return "redirect:/company/boat-list?page=0";
+    }
+
+    @GetMapping("/list")
+    public String list(@RequestParam Map<String, String> allParams, Model model){
+        model.addAttribute("boats", boatService.getAll(Integer.parseInt(allParams.get("page"))));
+        model.addAttribute("admin", true);
+        model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);
+        model.addAttribute("next", Integer.parseInt(allParams.get("page")) + 1);
+        return "boat_list";
     }
 }

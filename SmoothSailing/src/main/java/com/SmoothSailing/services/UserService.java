@@ -2,10 +2,12 @@ package com.SmoothSailing.services;
 
 import com.SmoothSailing.dto.ChangeUserPassDto;
 import com.SmoothSailing.dto.UserRegisterDto;
+import com.SmoothSailing.models.BoatModel;
 import com.SmoothSailing.models.UserModel;
 import com.SmoothSailing.repositories.UserRepo;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,12 +30,12 @@ public class UserService {
         newUserModel.setGender(userModel.getGender());
         newUserModel.setLicense(userModel.getLicense());
         newUserModel.setBirthday(userModel.getBirthday());
+        newUserModel.setSuperuser(false);
         return userRepo.save(newUserModel);
     }
 
-    public List<UserModel> getAllUsers(){
-        List<UserModel> userModel = userRepo.findAll();
-        return userModel;
+    public List<UserModel> getAll(int page){
+        return userRepo.findAll(PageRequest.of(page, 5)).getContent();
     }
 
     public UserModel authenticate(String email, String password) {

@@ -31,4 +31,6 @@ public class UserModel {
     @Column(name="Date_Of_Birth")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
+    @Column
+    private Boolean superuser;
 }

@@ -94,10 +94,12 @@ public class CompanyController {
         return "redirect:/";
     }
 
-    @GetMapping(path="/list")
-    public String users(Model model){
-        List<CompanyModel> companies = companyService.getAllCompanies();
-        model.addAttribute("companyListRequest", companies);
+    @GetMapping("/list")
+    public String list(@RequestParam Map<String, String> allParams, Model model){
+        model.addAttribute("companyListRequest", companyService.getAll(Integer.parseInt(allParams.get("page"))));
+        model.addAttribute("admin", true);
+        model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);
+        model.addAttribute("next", Integer.parseInt(allParams.get("page")) + 1);
         return "company/company_list";
     }
 
@@ -123,13 +125,13 @@ public class CompanyController {
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable("id") String id, @ModelAttribute CompanyRegisterDto companyDto){
         companyService.edit(id, companyDto);
-        return "redirect:/company/list";
+        return "redirect:/company/list?page=0";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") String id){
         companyService.deleteById(id);
-        return "redirect:/company/list";
+        return "redirect:/company/list?page=0";
     }
 
     @GetMapping("/profile")
@@ -154,6 +156,8 @@ public class CompanyController {
 
         List<BoatModel> boatPage = companyService.getBoatsByCompanyId(id, Integer.parseInt(allParams.get("page")));
         model.addAttribute("boats", boatPage);
+        model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);
+        model.addAttribute("next", Integer.parseInt(allParams.get("page")) + 1);
 
         return "company/boat_list";
     }

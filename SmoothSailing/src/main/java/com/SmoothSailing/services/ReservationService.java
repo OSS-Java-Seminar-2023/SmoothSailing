@@ -168,4 +168,8 @@ public class ReservationService {
     public void delete(String id){
         reservationRepo.deleteById(id);
     }
+
+    public List<ReservationModel> getAll(int page){
+        return reservationRepo.findAll(PageRequest.of(page, 5)).getContent();
+    }
 }
