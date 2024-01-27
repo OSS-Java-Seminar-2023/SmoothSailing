@@ -38,7 +38,6 @@ public class BoatService {
             boatModel.setPrice(boat.getPrice());
             boatModel.setCrewCapacity(boat.getCrewCapacity());
             boatModel.setPassengerCapacity(boat.getPassengerCapacity());
-            boatModel.setReview(boat.getReview());
             boatModel.setType(boat.getType());
             return boatRepo.save(boatModel);
         });

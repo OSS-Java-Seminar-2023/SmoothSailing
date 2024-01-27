@@ -172,6 +172,7 @@ public class ReservationController {
 
         System.out.println("Reservation request: " + reservationModel);
         reservationModel.setStatus("Pending");
+        reservationModel.setReviewed("No");
 
         ReservationModel reservationAttempt = reservationService.saveReservation(reservationModel);
         return reservationAttempt == null ? "error_page" : "redirect:/";
@@ -199,5 +200,13 @@ public class ReservationController {
         model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);
         model.addAttribute("next", Integer.parseInt(allParams.get("page")) + 1);
         return "reservation_list";
+    }
+
+    @PostMapping("/user/make_review")
+    public String makeReview(@RequestParam("reservationID") String reservationID, @RequestParam("review_score") double review_score){
+
+        reservationService.calculateReview(reservationID, review_score);
+
+        return "/user/user_reservations";
     }
 }

@@ -172,4 +172,27 @@ public class ReservationService {
     public List<ReservationModel> getAll(int page){
         return reservationRepo.findAll(PageRequest.of(page, 5)).getContent();
     }
+
+    public void calculateReview(String reservationID, double review_score){
+
+        Optional<ReservationModel> optionalReservationModel = reservationRepo.findById(reservationID);
+
+        ReservationModel reservationModel = optionalReservationModel.get();
+        reservationModel.setReviewed("Yes");
+        reservationRepo.save(reservationModel);
+
+        BoatModel boatModel = reservationModel.getBoat_id();
+
+        double numberOfReviews = boatModel.getNumberOfReviews();
+        double reviewSum = boatModel.getReviewSum();
+
+        numberOfReviews += 1;
+        reviewSum += review_score;
+
+        boatModel.setReviewSum(reviewSum);
+        boatModel.setNumberOfReviews(numberOfReviews);
+        boatModel.setReview(reviewSum/numberOfReviews);
+
+        boatRepo.save(boatModel);
+    }
 }

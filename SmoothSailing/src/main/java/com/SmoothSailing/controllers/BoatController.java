@@ -58,6 +58,10 @@ public class BoatController {
 
         boatModel.setImg(fileName);
 
+        boatModel.setReview(0);
+        boatModel.setReviewSum(0);
+        boatModel.setNumberOfReviews(0);
+
         BoatModel registeredBoat= boatService.registerBoat(boatModel);
 
         String uploadDir = "/images/";

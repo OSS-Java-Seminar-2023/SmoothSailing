@@ -23,8 +23,26 @@
                     <td class="align-middle" th:text="${reservation.status}"></td>
                     <td class="align-middle" th:text="${reservation.boat_id.name}"></td>
                     <td><a th:href="@{'/reservation/delete/' + ${reservation.id}}" class="btn btn-danger">Delete</a></td>
+
+                    <td th:if="${reservation.status eq 'Concluded' && reservation.reviewed eq 'No'} ">
+                        <form th:action="@{/user/make_review}" method="post">
+                            <input type="hidden" name="reservationID" th:value="${reservation.id}"/>
+
+                            <label for="review_score"> Choose a rating: </label>
+
+                            <select name="review_score" id="review_score">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+
+                            <button type="submit" class="btn btn-primary mx-4">Post review</button>
+                        </form>
+                    </td>
                 </tr>
-                <tr th:if="${reservations.isEmpty()}">
+                <tr th:if="${reservations != null and reservations.isEmpty()}">
                     <td class="text-center" colspan="3">No Records found. Add some...!</td><a href="/user/reservation"></a>
                 </tr>
             </tbody>

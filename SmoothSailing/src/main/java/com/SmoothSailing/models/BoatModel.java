@@ -20,7 +20,11 @@ public class BoatModel {
     @Column
     private String availability;
     @Column
-    private String review;
+    private double review;
+    @Column(name="number_of_reviews")
+    private double numberOfReviews;
+    @Column(name="review_sum")
+    private double reviewSum;
     @Column
     private String name;
     @Column
