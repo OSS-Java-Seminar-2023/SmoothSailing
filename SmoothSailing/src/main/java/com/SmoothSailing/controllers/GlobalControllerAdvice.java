@@ -1,10 +1,10 @@
 package com.SmoothSailing.controllers;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @ControllerAdvice
 public class GlobalControllerAdvice {
@@ -16,5 +16,10 @@ public class GlobalControllerAdvice {
         }
         System.out.println(name);
         model.addAttribute("authorize", name);
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public String handle404Error(NoHandlerFoundException ex) {
+        return "error"; // Return the error page view name
     }
 }

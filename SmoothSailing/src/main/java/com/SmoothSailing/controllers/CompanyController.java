@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -95,7 +96,12 @@ public class CompanyController {
     }
 
     @GetMapping("/list")
-    public String list(@RequestParam Map<String, String> allParams, Model model){
+    public String list(@CookieValue(name = "name", required = false) String role, @RequestParam Map<String, String> allParams, Model model){
+
+        if(!Objects.equals(role, "admin")){
+            return "error_page";
+        }
+
         model.addAttribute("companyListRequest", companyService.getAll(Integer.parseInt(allParams.get("page"))));
         model.addAttribute("admin", true);
         model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);
@@ -104,7 +110,12 @@ public class CompanyController {
     }
 
     @GetMapping("/change-password/{id}")
-    public String changePassword(@PathVariable("id") String id, Model model){
+    public String changePassword(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id, Model model){
+
+        if(!Objects.equals(role, "company")){
+            return "error_page";
+        }
+
         model.addAttribute("changePasswordRequest", id);
         return "company/company_change_pass";
     }
@@ -116,7 +127,12 @@ public class CompanyController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable("id") String id, Model model){
+    public String editForm(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id, Model model){
+
+        if(!Objects.equals(role, "company") && !role.equals("admin")){
+            return "error_page";
+        }
+
         Optional<CompanyModel> user = companyService.getById(id);
         user.ifPresent(userModel -> model.addAttribute("editCompanyRequest", userModel));
         return "company/edit_company";
@@ -129,14 +145,21 @@ public class CompanyController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") String id){
+    public String delete(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id){
+
+        if(!Objects.equals(role, "company") && !role.equals("admin")){
+            return "error_page";
+        }
+
         companyService.deleteById(id);
         return "redirect:/company/list?page=0";
     }
 
     @GetMapping("/profile")
-    public String profilePage(@CookieValue(name = "company_id", required = false) String id, Model model){
+    public String profilePage(@CookieValue(name = "name", required = false) String role,
+                              @CookieValue(name = "company_id", required = false) String id, Model model){
 
+        if(role != "company") return "error_page";
         if(id == null || id.isEmpty()){
             return "company/login_page";
         }

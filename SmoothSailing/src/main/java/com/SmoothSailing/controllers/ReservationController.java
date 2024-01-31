@@ -69,7 +69,9 @@ public class ReservationController {
     }
 
     @GetMapping("/user/reservations")
-    public String getUserReservations(@CookieValue(name = "id", required = false) String id, Model model){
+    public String getUserReservations(@CookieValue(name = "name", required = false) String role, @CookieValue(name = "id", required = false) String id, Model model){
+
+        if(!Objects.equals(role, "user")) return "error_page";
         if(id == null || id.isEmpty())
             return "user/login_page";
         List<ReservationModel> reservations = reservationService.findAllReservations(id);
@@ -90,7 +92,10 @@ public class ReservationController {
     }
 
     @GetMapping("/user/reservation")
-    public String getReservationPage(@CookieValue(name = "id", required = false) String id, Model model){
+    public String getReservationPage(@CookieValue(name = "name", required = false) String role,
+                                     @CookieValue(name = "id", required = false) String id, Model model){
+
+        if(!Objects.equals(role, "user")) return "error_page";
         if(id == null || id.isEmpty()){
             return "user/login_page";
         }
@@ -107,6 +112,7 @@ public class ReservationController {
 
     @RequestMapping("/user/available_boats")
     public String getAvailableBoatsPage( @CookieValue(name = "id", required = false) String id,
+                                         @CookieValue(name = "name", required = false) String role,
             @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date newStartDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") Date newEndDate,
             @RequestParam("passengerCapacity") Integer passengerCapacity,
@@ -116,6 +122,9 @@ public class ReservationController {
             @RequestParam("page") Optional<Integer> page,
             @RequestParam("size") Optional<Integer> size,
             Model model) {
+        if(!role.equals("user")){
+            return "error_page";
+        }
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(2);
 
@@ -188,13 +197,22 @@ public class ReservationController {
     }
 
     @GetMapping("/reservation/delete/{id}")
-    public String delete(@PathVariable("id") String id){
+    public String delete(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id){
+
+        if(!Objects.equals(role, "company") && !role.equals("admin"))
+            return "error_page";
+
         reservationService.delete(id);
         return "redirect:/user/reservations";
     }
 
     @GetMapping("/reservations/list")
-    public String list(@RequestParam Map<String, String> allParams, Model model){
+    public String list(@CookieValue(name = "name", required = false) String role,
+                       @RequestParam Map<String, String> allParams, Model model){
+
+        if(!Objects.equals(role, "company") && !role.equals("admin"))
+            return "error_page";
+
         model.addAttribute("reservations", reservationService.getAll(Integer.parseInt(allParams.get("page"))));
         model.addAttribute("admin", true);
         model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);

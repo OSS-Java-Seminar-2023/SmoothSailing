@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,10 +43,16 @@ public class BoatController {
     }
 
     @GetMapping(path="/register")
-    public String getRegisterBoat(@CookieValue(name = "company_id", required = false) String id, Model model){
+    public String getRegisterBoat(@CookieValue(name = "company_id", required = false) String id,
+                                  @CookieValue(name = "name", required = false) String role, Model model){
+
+        if(!Objects.equals(role, "company")){
+            return "error_page";
+        }
         if(id == null || id.isEmpty()){
             return "company/login_page";
         }
+
         model.addAttribute("registerBoatRequest", new BoatModel());
         model.addAttribute("companies", companyService.getCompanyById(id));
         return "register_boat";
@@ -76,7 +83,12 @@ public class BoatController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable("id") String id, Model model){
+    public String editForm(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id, Model model){
+
+        if(!Objects.equals(role, "company") && !role.equals("admin")){
+            return "error_page";
+        }
+
         Optional<BoatModel> boat = boatService.getBoatById(id);
         boat.ifPresent(boatModel -> model.addAttribute("editBoat", boatModel));
         return "edit_boat";
@@ -89,13 +101,23 @@ public class BoatController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") String id){
+    public String delete(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id){
+
+        if(!Objects.equals(role, "company") && !role.equals("admin")){
+            return "error_page";
+        }
+
         boatService.delete(id);
         return "redirect:/company/boat-list?page=0";
     }
 
     @GetMapping("/list")
-    public String list(@RequestParam Map<String, String> allParams, Model model){
+    public String list(@CookieValue(name = "name", required = false) String role, @RequestParam Map<String, String> allParams, Model model){
+
+        if(!Objects.equals(role, "company") && !role.equals("admin")){
+            return "error_page";
+        }
+
         model.addAttribute("boats", boatService.getAll(Integer.parseInt(allParams.get("page"))));
         model.addAttribute("admin", true);
         model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);

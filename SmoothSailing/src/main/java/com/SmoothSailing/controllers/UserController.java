@@ -12,10 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/user")
@@ -24,7 +21,12 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/list")
-    public String list(@RequestParam Map<String, String> allParams, Model model){
+    public String list(@CookieValue(name = "name", required = false) String role, @RequestParam Map<String, String> allParams, Model model){
+
+        if(!Objects.equals(role, "admin")){
+            return "error_page";
+        }
+
         model.addAttribute("userListRequest", userService.getAll(Integer.parseInt(allParams.get("page"))));
         model.addAttribute("admin", true);
         model.addAttribute("prev", Integer.parseInt(allParams.get("page")) - 1);
@@ -98,7 +100,12 @@ public class UserController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editForm(@CookieValue("id") String id, Model model){
+    public String editForm(@CookieValue(name = "name", required = false) String role, @CookieValue("id") String id, Model model){
+
+        if(!Objects.equals(role, "user") && !role.equals("admin")){
+            return "error_page";
+        }
+
         Optional<UserModel> user = userService.getUserById(id);
         user.ifPresent(userModel -> model.addAttribute("editUserRequest", userModel));
         return "user/edit_user";
@@ -111,13 +118,23 @@ public class UserController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") String id){
+    public String delete(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id){
+
+        if(!Objects.equals(role, "user") && !role.equals("admin")){
+            return "error_page";
+        }
+
         userService.deleteUserById(id);
         return "redirect:/user/list?page=0";
     }
 
     @GetMapping("/change-password/{id}")
-    public String changePassword(@PathVariable("id") String id, Model model){
+    public String changePassword(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id, Model model){
+
+        if(!Objects.equals(role, "user")){
+            return "error_page";
+        }
+
         model.addAttribute("changePasswordRequest", id);
         return "user/change_password";
     }
@@ -129,8 +146,11 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public String profilePage(@CookieValue(name = "id", required = false) String id, Model model){
-
+    public String profilePage(@CookieValue(name = "name", required = false) String role,
+                              @CookieValue(name = "id", required = false) String id, Model model){
+        if(!Objects.equals(role, "user") && !role.equals("admin")){
+            return "error_page";
+        }
         if(id == null || id.isEmpty()){
             return "user/login_page";
         }
