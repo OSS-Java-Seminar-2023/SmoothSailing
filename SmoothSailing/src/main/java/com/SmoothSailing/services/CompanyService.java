@@ -27,32 +27,53 @@ public class CompanyService {
         this.boatRepo = boatRepo;
     }
 
-    public CompanyModel registerCompany(CompanyRegisterDto companyRegisterDto){
-        if(companyRepo.findByEmail(companyRegisterDto.getEmail()).isPresent()){
-            System.out.println("Email vec postoji u bazi!");
-            return null;
+    public CompanyModel registerCompany(CompanyRegisterDto companyRegisterDto) {
+        try {
+            if (companyRepo.findByEmail(companyRegisterDto.getEmail()).isPresent()) {
+                System.out.println("Email already exists in the database!");
+                throw new ExceptionService("Email already exists in the database!");
+            }
+
+            CompanyModel companyModel = new CompanyModel();
+            companyModel.setName(companyRegisterDto.getName());
+            companyModel.setLocation(companyRegisterDto.getLocation());
+            companyModel.setEmail(companyRegisterDto.getEmail());
+            companyModel.setPassword(BCrypt.hashpw(companyRegisterDto.getPassword(), BCrypt.gensalt(10)));
+
+            return companyRepo.save(companyModel);
+
+        } catch (ExceptionService e) {
+            e.printStackTrace();
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionService("An error occurred while registering the company.");
         }
-        CompanyModel companyModel = new CompanyModel();
-        companyModel.setName(companyRegisterDto.getName());
-        companyModel.setLocation(companyRegisterDto.getLocation());
-        companyModel.setEmail(companyRegisterDto.getEmail());
-        companyModel.setPassword(BCrypt.hashpw(companyRegisterDto.getPassword(), BCrypt.gensalt(10)));
-        return companyRepo.save(companyModel);
     }
 
-    public CompanyModel authenticateCompany(String email, String password){
-        System.out.println("Authenticating company with email: " + email);
-        System.out.println("Authenticating company with password: " + password);
+    public CompanyModel authenticateCompany(String email, String password) {
+        try {
+            System.out.println("Authenticating company with email: " + email);
+            System.out.println("Authenticating company with password: " + password);
 
-        Optional<CompanyModel> companyOptional = companyRepo.findByEmail(email);
+            Optional<CompanyModel> companyOptional = companyRepo.findByEmail(email);
 
-        if (companyOptional.isPresent()){
-            CompanyModel company = companyOptional.get();
-            if(BCrypt.checkpw(password, company.getPassword())){
-                return company;
+            if (companyOptional.isPresent()) {
+                CompanyModel company = companyOptional.get();
+                if (BCrypt.checkpw(password, company.getPassword())) {
+                    return company;
+                }
             }
+
+            throw new ExceptionService("Authentication failed. Invalid email or password.");
+
+        } catch (ExceptionService e) {
+            e.printStackTrace();
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionService("An error occurred during authentication.");
         }
-        return null;
     }
 
     public List<CompanyModel> getAllCompanies(){

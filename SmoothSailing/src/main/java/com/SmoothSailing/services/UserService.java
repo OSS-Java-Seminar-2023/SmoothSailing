@@ -18,20 +18,27 @@ public class UserService {
     public UserRepo userRepo;
 
     public UserModel registerUser(UserRegisterDto userModel){
-        if(userRepo.findByEmail(userModel.getEmail()).isPresent()){
-            System.out.println("Email vec postoji u bazi!");
-            return null;
+        try {
+            if (userRepo.findByEmail(userModel.getEmail()).isPresent()) {
+                throw new ExceptionService("Email already exists in the database!");
+            }
+            UserModel newUserModel = new UserModel();
+            newUserModel.setName(userModel.getName());
+            newUserModel.setSurname(userModel.getSurname());
+            newUserModel.setEmail(userModel.getEmail());
+            newUserModel.setPassword(BCrypt.hashpw(userModel.getPassword(), BCrypt.gensalt(10)));
+            newUserModel.setGender(userModel.getGender());
+            newUserModel.setLicense(userModel.getLicense());
+            newUserModel.setBirthday(userModel.getBirthday());
+            newUserModel.setSuperuser(false);
+            return userRepo.save(newUserModel);
+        } catch (ExceptionService e) {
+            e.printStackTrace();
+            throw e;
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new ExceptionService("An error occurred while registering the user.");
         }
-        UserModel newUserModel = new UserModel();
-        newUserModel.setName(userModel.getName());
-        newUserModel.setSurname(userModel.getSurname());
-        newUserModel.setEmail(userModel.getEmail());
-        newUserModel.setPassword(BCrypt.hashpw(userModel.getPassword(), BCrypt.gensalt(10)));
-        newUserModel.setGender(userModel.getGender());
-        newUserModel.setLicense(userModel.getLicense());
-        newUserModel.setBirthday(userModel.getBirthday());
-        newUserModel.setSuperuser(false);
-        return userRepo.save(newUserModel);
     }
 
     public List<UserModel> getAll(int page){
@@ -39,18 +46,25 @@ public class UserService {
     }
 
     public UserModel authenticate(String email, String password) {
-        System.out.println("Authenticating user with email: " + email);
-        System.out.println("Authenticating user with password: " + password);
+        try {
+            Optional<UserModel> userOptional = userRepo.findByEmail(email);
 
-        Optional<UserModel> userOptional = userRepo.findByEmail(email);
-
-        if (userOptional.isPresent()) {
-            UserModel user = userOptional.get();
-            if (BCrypt.checkpw(password, user.getPassword())) {
-                return user;
+            if (userOptional.isPresent()) {
+                UserModel user = userOptional.get();
+                if (BCrypt.checkpw(password, user.getPassword())) {
+                    return user;
+                }
             }
+
+            throw new ExceptionService("Authentication failed. Invalid email or password.");
+
+        } catch (ExceptionService e) {
+            e.printStackTrace();
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionService("An error occurred during authentication.");
         }
-        return null;
     }
 
     public Optional<UserModel> getUserById(String id){

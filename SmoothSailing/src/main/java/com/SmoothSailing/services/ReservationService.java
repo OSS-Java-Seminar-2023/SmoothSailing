@@ -44,27 +44,33 @@ public class ReservationService {
     }
 
     public ReservationModel saveReservation(ReservationModel reservationModel) {
-        //gleda jeli start date postavljen posli end date ako je baca null
-        if (reservationModel.getStartDate().after(reservationModel.getEndDate())) {
-            System.out.println("Start date cannot be after end date!");
-            return null;
-        }
-        System.out.println(reservationModel.getStatus().toLowerCase());
-        //gledamo sa funkcijom getAllReservationBoatID jeli sadrži brod u rezervacijama jer ako se nalazi onda moramo viditi jeli se preklapa nova
-        //rezervacija sa starima
-        if(getAllReservationBoatID().contains(UUID.fromString(reservationModel.getBoat_id().getId()))){
-            //Dohvacamo sve rezervacije za neki brod po ID-u pa u petlji gledamo jeli se trenutna rezervacija preklapa sa prijasnjim rezervacijama tog broda
-            //ako je vracamo null ako nije nastavimo dalje s kodom i spremimo u bazu
+        try {
+            //gleda jeli start date postavljen posli end date ako je baca null
+            if (reservationModel.getStartDate().after(reservationModel.getEndDate())) {
+                throw new ExceptionService("Start date cannot be after end date!");
+            }
+            System.out.println(reservationModel.getStatus().toLowerCase());
+            //gledamo sa funkcijom getAllReservationBoatID jeli sadrži brod u rezervacijama jer ako se nalazi onda moramo viditi jeli se preklapa nova
+            //rezervacija sa starima
+            if (getAllReservationBoatID().contains(UUID.fromString(reservationModel.getBoat_id().getId()))) {
+                //Dohvacamo sve rezervacije za neki brod po ID-u pa u petlji gledamo jeli se trenutna rezervacija preklapa sa prijasnjim rezervacijama tog broda
+                //ako je vracamo null ako nije nastavimo dalje s kodom i spremimo u bazu
 
-            List <ReservationDatesDto> dateRows = getAllDatesByBoatID((reservationModel.getBoat_id().getId()));
-            for (ReservationDatesDto dateRow : dateRows) {
-                if(checkDatesOverlap(reservationModel.getStartDate(), reservationModel.getEndDate(), dateRow.getStartDate(), dateRow.getEndDate())){
-                    System.out.println("There is already a reservation during this time!");
-                    return null;
+                List<ReservationDatesDto> dateRows = getAllDatesByBoatID((reservationModel.getBoat_id().getId()));
+                for (ReservationDatesDto dateRow : dateRows) {
+                    if (checkDatesOverlap(reservationModel.getStartDate(), reservationModel.getEndDate(), dateRow.getStartDate(), dateRow.getEndDate())) {
+                        throw new ExceptionService("There is already a reservation during this time!");
+                    }
                 }
             }
+            return reservationRepo.save(reservationModel);
+        } catch (ExceptionService e){
+            e.printStackTrace();
+            throw e;
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new ExceptionService("An error occurred while saving the reservation.");
         }
-        return reservationRepo.save(reservationModel);
     }
 
     public boolean checkDatesOverlap(Date newStartDate, Date newEndDate, Date existingStartDate, Date existingEndDate) {
