@@ -71,14 +71,24 @@ public class ReservationController {
     }
 
     @GetMapping("/user/reservations")
-    public String getUserReservations(@CookieValue(name = "name", required = false) String role, @CookieValue(name = "id", required = false) String id, Model model){
+    public String getUserReservations(@CookieValue(name = "name", required = false) String role, @CookieValue(name = "id", required = false) String id, Model model,
+                                      @RequestParam(value = "sort", defaultValue = "startDate,asc") String[] sort,
+                                      @RequestParam(value = "search", required = false) String search){
 
-        if(!Objects.equals(role, "user")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");;
+        if(!role.equals("user")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");;
         if(id == null || id.isEmpty())
             return "user/login_page";
-        List<ReservationModel> reservations = reservationService.findAllReservations(id);
+
+        String sortField = sort[0];
+        String sortDirection = sort[1];
+
+        List<ReservationModel> reservations = reservationService.findAllReservations(id, search, sort);
         System.out.println(reservations);
         model.addAttribute("reservations", reservations);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("search", search);
+
         return "user/user_reservations";
     }
 

@@ -39,8 +39,18 @@ public class ReservationService {
         return reservationRepo.findAllDatesByBoatID(boat_id);
     }
 
-    public List<ReservationModel> findAllReservations(String id){
-        return reservationRepo.findAllByUserId(id);
+    public List<ReservationModel> findAllReservations(String id, String search, String[] sort){
+
+        String sortField = sort[0];
+        String sortDirection = sort[1];
+
+        Sort.Direction direction = sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort.Order order = new Sort.Order(direction, sortField);
+
+        if(search != null) {
+            return reservationRepo.findAllByUserId(id, search, Sort.by(order));
+        }
+        return reservationRepo.findAllByUserId(id, Sort.by(order));
     }
 
     public ReservationModel saveReservation(ReservationModel reservationModel) {

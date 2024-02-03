@@ -3,6 +3,7 @@ package com.SmoothSailing.repositories;
 import com.SmoothSailing.dto.ReservationDatesDto;
 import com.SmoothSailing.models.BoatModel;
 import com.SmoothSailing.models.ReservationModel;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,5 +29,8 @@ public interface ReservationRepo extends JpaRepository<ReservationModel, String>
     List<ReservationModel> findAllByBoat(@Param("id") String id);
 
     @Query("SELECT r FROM ReservationModel r Where r.user_id.id = :id")
-    List<ReservationModel> findAllByUserId(@Param("id") String id);
+    List<ReservationModel> findAllByUserId(@Param("id") String id, Sort sort);
+
+    @Query("SELECT r FROM ReservationModel r Where r.user_id.id = :id AND CONCAT(r.status) LIKE %:search%")
+    List<ReservationModel> findAllByUserId(@Param("id") String id, @Param("search") String search, Sort sort);
 }
