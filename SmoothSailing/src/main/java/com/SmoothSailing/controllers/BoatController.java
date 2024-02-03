@@ -50,7 +50,7 @@ public class BoatController {
             return "error_page";
         }
         if(id == null || id.isEmpty()){
-            return "company/login_page";
+            throw new NullPointerException("Id value cannot be null!");
         }
 
         model.addAttribute("registerBoatRequest", new BoatModel());
@@ -71,7 +71,7 @@ public class BoatController {
 
         BoatModel registeredBoat= boatService.registerBoat(boatModel);
 
-        String uploadDir = "/images/";
+        String uploadDir = "src/main/resources/images/";
 
         try {
             fileUploadService.saveFile(uploadDir, fileName, file);

@@ -17,9 +17,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.time.LocalDateTime;
@@ -71,7 +73,7 @@ public class ReservationController {
     @GetMapping("/user/reservations")
     public String getUserReservations(@CookieValue(name = "name", required = false) String role, @CookieValue(name = "id", required = false) String id, Model model){
 
-        if(!Objects.equals(role, "user")) return "error_page";
+        if(!Objects.equals(role, "user")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");;
         if(id == null || id.isEmpty())
             return "user/login_page";
         List<ReservationModel> reservations = reservationService.findAllReservations(id);
@@ -95,7 +97,7 @@ public class ReservationController {
     public String getReservationPage(@CookieValue(name = "name", required = false) String role,
                                      @CookieValue(name = "id", required = false) String id, Model model){
 
-        if(!Objects.equals(role, "user")) return "error_page";
+        if(!Objects.equals(role, "user")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");;
         if(id == null || id.isEmpty()){
             return "user/login_page";
         }
@@ -123,7 +125,7 @@ public class ReservationController {
             @RequestParam("size") Optional<Integer> size,
             Model model) {
         if(!role.equals("user")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(2);
@@ -200,7 +202,7 @@ public class ReservationController {
     public String delete(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id){
 
         if(!Objects.equals(role, "company") && !role.equals("admin"))
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
 
         reservationService.delete(id);
         return "redirect:/user/reservations";
@@ -211,7 +213,7 @@ public class ReservationController {
                        @RequestParam Map<String, String> allParams, Model model){
 
         if(!Objects.equals(role, "company") && !role.equals("admin"))
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
 
         model.addAttribute("reservations", reservationService.getAll(Integer.parseInt(allParams.get("page"))));
         model.addAttribute("admin", true);

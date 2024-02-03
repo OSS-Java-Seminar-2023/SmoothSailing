@@ -23,7 +23,7 @@
             <tbody>
             <tr th:each="boat : ${boats}">
                 <td class="align-middle">
-                    <img th:src="@{'../../../../../../../images/' + ${boat.img}}"/>
+                    <img th:src="@{'/images/' + ${boat.img}}"/>
                 </td>
                 <td class="align-middle" th:text="${boat.price}"></td>
                 <td class="align-middle" th:text="${boat.availability}"></td>

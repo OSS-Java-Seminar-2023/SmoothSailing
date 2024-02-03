@@ -8,9 +8,11 @@ import com.SmoothSailing.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -24,7 +26,7 @@ public class UserController {
     public String list(@CookieValue(name = "name", required = false) String role, @RequestParam Map<String, String> allParams, Model model){
 
         if(!Objects.equals(role, "admin")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
 
         model.addAttribute("userListRequest", userService.getAll(Integer.parseInt(allParams.get("page"))));
@@ -77,7 +79,7 @@ public class UserController {
             return "redirect:/user/profile";
         }
         else{
-            return "error_page";
+            throw new NullPointerException("Value cannot be null!");
         }
     }
 
@@ -103,7 +105,7 @@ public class UserController {
     public String editForm(@CookieValue(name = "name", required = false) String role, @CookieValue("id") String id, Model model){
 
         if(!Objects.equals(role, "user") && !role.equals("admin")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
 
         Optional<UserModel> user = userService.getUserById(id);
@@ -121,7 +123,7 @@ public class UserController {
     public String delete(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id){
 
         if(!Objects.equals(role, "user") && !role.equals("admin")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
 
         userService.deleteUserById(id);
@@ -132,7 +134,7 @@ public class UserController {
     public String changePassword(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id, Model model){
 
         if(!Objects.equals(role, "user")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
 
         model.addAttribute("changePasswordRequest", id);
@@ -149,10 +151,10 @@ public class UserController {
     public String profilePage(@CookieValue(name = "name", required = false) String role,
                               @CookieValue(name = "id", required = false) String id, Model model){
         if(!Objects.equals(role, "user") && !role.equals("admin")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
         if(id == null || id.isEmpty()){
-            return "user/login_page";
+            throw new NullPointerException("Value cannot be null!");
         }
 
         Optional<UserModel> user = userService.getUserById(id);

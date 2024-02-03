@@ -13,9 +13,11 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -72,7 +74,7 @@ public class CompanyController {
             return "redirect:/";
         }
         else{
-            return "error_page";
+            throw new NullPointerException("Id value cannot be null!");
         }
     }
 
@@ -99,7 +101,7 @@ public class CompanyController {
     public String list(@CookieValue(name = "name", required = false) String role, @RequestParam Map<String, String> allParams, Model model){
 
         if(!Objects.equals(role, "admin")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
 
         model.addAttribute("companyListRequest", companyService.getAll(Integer.parseInt(allParams.get("page"))));
@@ -113,7 +115,7 @@ public class CompanyController {
     public String changePassword(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id, Model model){
 
         if(!Objects.equals(role, "company")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
 
         model.addAttribute("changePasswordRequest", id);
@@ -130,7 +132,7 @@ public class CompanyController {
     public String editForm(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id, Model model){
 
         if(!Objects.equals(role, "company") && !role.equals("admin")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
 
         Optional<CompanyModel> user = companyService.getById(id);
@@ -148,7 +150,7 @@ public class CompanyController {
     public String delete(@CookieValue(name = "name", required = false) String role, @PathVariable("id") String id){
 
         if(!Objects.equals(role, "company") && !role.equals("admin")){
-            return "error_page";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");
         }
 
         companyService.deleteById(id);
@@ -159,7 +161,7 @@ public class CompanyController {
     public String profilePage(@CookieValue(name = "name", required = false) String role,
                               @CookieValue(name = "company_id", required = false) String id, Model model){
 
-        if(role != "company") return "error_page";
+        if(!Objects.equals(role, "company")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Values are not equal");;
         if(id == null || id.isEmpty()){
             return "company/login_page";
         }
