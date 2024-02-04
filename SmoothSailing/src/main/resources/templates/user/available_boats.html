@@ -64,7 +64,7 @@
                         <input type="hidden" name="boat_id" th:value="${boat.id}" />
 
                         <td>
-                            <img th:src="@{'/images/' + ${boat.img}}"/>
+                            <img th:src="@{'/images/' + ${boat.img}}" style="height:125px;width:200px;"/>
                         </td>
                         <td th:text="${boat.name}" />
                         <td>
